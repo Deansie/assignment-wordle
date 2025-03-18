@@ -32,3 +32,27 @@ The words "CYKLA" (selected) and "HALLÅ" (guess) would return the following:
 - L / `incorrect` (since there is already a correct L)
 - L / `correct`
 - Å / `incorrect`
+
+
+
+
+
+
+
+
+
+### Functions that may be applied later on
+
+function compareArrays(array1, array2) {  
+
+    if (array1.length !== array2.length) {
+        return false + " THE WORD CONTAINS WRONG AMOUNT OF LETTERS";
+    }
+
+    for (let i = 0; i < array1.length; i++) {
+        if (array1[i] !== array2[i]) {
+            return false + " THE WORD IS WRONG";
+       }
+    } 
+    return true + " THE WORD IS CORRECT"; 
+};

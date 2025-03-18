@@ -1,7 +1,7 @@
 export function algorithmA() {
     
     // Input
-    const guessedWord = "noisy";
+    const guessedWord = "haass";
     const correctWord = "hoist"
 
     const guessedUpper = guessedWord.toUpperCase();
@@ -11,29 +11,22 @@ export function algorithmA() {
 
     const guessedArray = guessedUpper.split('');
     const correctArray = correctUpper.split('');
-    guessedArray.sort();
-    correctArray.sort();
+  
+    // Output
+    function labelLetters(guessedArray, correctArray) {
 
-    // Modified input to use in function
-    console.log(guessedArray, correctArray);
-    
-    // Function to check similarity between arrays guessedArray and correctArray
-    function compareArrays(array1, array2) {
-        if (array1.length !== array2.length) {
-            return false;
+        return guessedArray.map((letter, index) => {
+            if (letter === correctArray[index]) {
+                return letter + " / correct";
+            } else if (correctArray.includes(letter)) {
+                return letter + " / misplaced";
+            } else {
+                return letter + " / incorrect";
+            }
+        })
+        
+    }
 
-        } else {
-            
-            return true;
-        }
-    } 
-
+    console.log(labelLetters(guessedArray, correctArray));
     console.log(compareArrays(guessedArray, correctArray));
-};
-
-algorithmA();
-
-
-export function algorithmB() {
-
-};
+}
