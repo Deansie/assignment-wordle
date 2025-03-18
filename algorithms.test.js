@@ -1,3 +1,35 @@
+/* 
+
+---> Test strategy for the function algorithmA <---
+
+1. Test level 
+    - Unit test of individual components
+
+2. Objectives
+    - Ensure algorithmA works for typical cases and returns the expected output
+
+3. Scope
+    - Test three subordinate functions (upperCasing, stringToArray, labelLetters) with basic inputs
+    - Focus on core behavior and skip edgecases
+
+4. Testing approach
+    - Implement simple unit tests with Node.js assert
+    - Cover one typical case per function and mixed cases for labelLetters
+
+5. Test cases:
+    upperCasing:
+        - Input: "noiSy", "Noisy" → Expect: ["NOISY", "NOISY"].
+
+    stringToArray:
+        - Input: "NOISY", "HOIST" → Expect: [["N", "O", "I", "S", "Y"], ["H", "O", "I", "S", "T"]].
+    
+    labelLetters:
+        - Input: "NOISY", "ABCDE" → Expect: ["N / incorrect", "O / incorrect", "I / incorrect", "S / incorrect", "Y / incorrect"].
+        - Input: "NOISY", "NOISY" → Expect: ["N / correct", "O / correct", "I / correct", "S / correct", "Y / correct"].
+        - Input: "NOISY", "SINYO" → Expect: ["N / misplaced", "O / misplaced", "I / misplaced", "S / misplaced", "Y / misplaced"].
+        - Input: "NOISY", "NIFTY" → Expect: ["N / correct", "O / incorrect", "I / misplaced", "S / incorrect", "Y / correct"].
+
+*/
 import assert from 'node:assert/strict';
 import { algorithmA } from "./algorithms.js";
 
