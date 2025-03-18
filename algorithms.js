@@ -3,11 +3,17 @@ export function algorithmA() {
     const guessedWord = "noisy";
     const correctWord = "hoist"
 
-    const upperGuess = guessedWord.toUpperCase();
-    const upperCorrect = correctWord.toUpperCase();
+    const guessedUpper = guessedWord.toUpperCase();
+    const correctUpper = correctWord.toUpperCase();
 
-    console.log(upperGuess, upperCorrect);
+    console.log(guessedUpper, correctUpper);
 
+    const guessedArray = guessedUpper.split('');
+    const correctArray = correctUpper.split('');
+    guessedArray.sort();
+    correctArray.sort();
+
+    console.log(guessedArray, correctArray);
 };
 
 algorithmA();
