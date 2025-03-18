@@ -1,17 +1,13 @@
-export function algorithmA() {
+export function algorithmA(guessedWord, correctWord) {
     
-    // Input
-    const guessedWord = "noisy"; // User-input
-    const correctWord = "hoist";
+    let guessedUpper = guessedWord.toUpperCase();
+    let correctUpper = correctWord.toUpperCase();
 
-    const guessedUpper = guessedWord.toUpperCase();
-    const correctUpper = correctWord.toUpperCase();
-
-    // console.log("Guessed word:", guessedUpper, "|| Correct word:", correctUpper);
+    console.log("Guessed word:", guessedUpper, "|| Correct word:", correctUpper);
 
     const guessedArray = guessedUpper.split('');
     const correctArray = correctUpper.split('');
-  
+
     // Output
     function labelLetters(guessedArray, correctArray) {
 
@@ -27,8 +23,10 @@ export function algorithmA() {
         
     }
 
-    // console.log(labelLetters(guessedArray, correctArray));
+    console.log(labelLetters(guessedArray, correctArray));
+
+    return guessedArray, correctArray;
 
 }
 
-// algorithmA();
+algorithmA("Hoist", "Noisy");
