@@ -33,4 +33,4 @@ export function algorithmA(guessedWord, correctWord) {
     
 }
 
-// algorithmA("Hoist", "Noisy");
+// algorithmA("Noisy", "Nifty");

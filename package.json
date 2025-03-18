@@ -13,8 +13,8 @@
   "license": "ISC",
   "author": "Deansie",
   "type": "module",
-  "main": "module-algorithm2.js",
+  "main": "algorithms.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node algorithms.test.js"
   }
 }
