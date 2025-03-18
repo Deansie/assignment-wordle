@@ -1,0 +1,20 @@
+{
+  "name": "assignment-wordle",
+  "version": "1.0.0",
+  "description": "Assignment: Create a game inspired by the popular game Wordle",
+  "homepage": "https://github.com/Deansie/assignment-wordle#readme",
+  "bugs": {
+    "url": "https://github.com/Deansie/assignment-wordle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deansie/assignment-wordle.git"
+  },
+  "license": "ISC",
+  "author": "Deansie",
+  "type": "module",
+  "main": "module-algorithm2.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
