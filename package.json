@@ -1,20 +1,27 @@
 {
   "name": "assignment-wordle",
-  "version": "1.0.0",
-  "description": "Assignment: Create a game inspired by the popular game Wordle",
-  "homepage": "https://github.com/Deansie/assignment-wordle#readme",
-  "bugs": {
-    "url": "https://github.com/Deansie/assignment-wordle/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Deansie/assignment-wordle.git"
-  },
-  "license": "ISC",
-  "author": "Deansie",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "main": "algorithms.js",
   "scripts": {
-    "test": "node algorithms.test.js"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "vite": "^6.2.0"
   }
 }
