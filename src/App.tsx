@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import Highscores from './pages/Highscores';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar/Navbar'
 
 function App() {
   return (
