@@ -1,20 +1,35 @@
 body {
     background: linear-gradient(to bottom, #FDF8F0 0%, #EAD9C6 100%) fixed;
     font-family: Arial, sans-serif;
+    
 }
 
 main {
-    div {
+
+    color: #2C3639;
+
+    h1 {
+        text-align: center;
+    }
+
+}
+
+.mainDiv {
+    
     max-width: 800px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: auto;
+    
     padding: 10px;
     background-color: #EAD9C6;
     border: 2px solid #5A4638;
     border-radius: 4px;
+    margin-bottom: 2rem;
+
+
     }
-}
 
 header {    
     border: 2px solid #5A4638;

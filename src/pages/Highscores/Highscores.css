@@ -1,0 +1,14 @@
+div {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+table {
+    
+    text-align: center;
+    padding: 2px;
+    
+  }
+  
