@@ -1,4 +1,4 @@
-export function algorithmA(guessedWord, correctWord) {
+export function algorithmA(guessedWord: string, correctWord: string) {
     let guessedUpper = guessedWord.toUpperCase();
     let correctUpper = correctWord.toUpperCase();
     const guessedArray = guessedUpper.split('');
@@ -13,9 +13,9 @@ export function algorithmA(guessedWord, correctWord) {
     }
 
     // Output
-    function labelLetters(guessedArray, correctArray) {
+    function labelLetters(guessedArray: string, correctArray: string) {
 
-        return guessedArray.map((letter, index) => {
+        return guessedArray.split('').map((letter: string, index: number) => {
             if (letter === correctArray[index]) {
                 return letter + " / correct";
             } else if (correctArray.includes(letter)) {
