@@ -1,26 +1,47 @@
-nav {
-    padding: 10px;
-    background-color: #f0f0f0;
-}
-
 nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    padding-top: 0.3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 nav li {
-    display: inline-block;
+    
     margin: 0 10px;
     padding: 5px 10px;
     transition: background-color 0.2s;
 }
 
 nav a {
+    
     text-decoration: none;
-    color: #333
+    font-size: 2rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    color: #2C3639;
 }
 
 .nav-item--hovered {
-    background-color: #ddd;
+    background-color: white;
+    border-radius: 5px;
+    color: white;
+    
+}
+
+figure {
+    margin: auto;
+    display: flex;
+    padding-top: 1rem;
+    padding-bottom: 0.7rem;
+    justify-content: center;
+
+    img {
+        max-width: 75%;    
+        border-radius: 5px;
+        
+    }
 }

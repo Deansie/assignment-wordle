@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Highscores from './pages/Highscores';
-import About from './pages/About';
-import NotFound from './pages/NotFound';
+import Home from './pages/Home/Home';
+import Highscores from './pages/Highscores/Highscores';
+import About from './pages/About/About';
+import NotFound from './pages/NotFound/NotFound';
 import Navbar from './components/Navbar/Navbar'
 
 function App() {
@@ -10,10 +10,10 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<h1>Home Page</h1>} />
-        <Route path="/highscores" element={<h1>High scores</h1>} />
-        <Route path="/about" element={<h1>About Page</h1>} />
-        <Route path="*" element={<h1>404 - Not Found</h1>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/highscores" element={<Highscores />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
