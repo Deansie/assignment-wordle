@@ -3,7 +3,7 @@ import './Highscores.css'
 export default function Highscores() {
     return (
         <main>
-            <div className='mainDiv'>
+            <div className='mainDivHighScores'>
                 <h1>Highest scores</h1>
                 <div>
                 <table>
