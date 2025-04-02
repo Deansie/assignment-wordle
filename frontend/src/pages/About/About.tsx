@@ -1,6 +1,7 @@
 import './About.css'
+import { ReactNode } from 'react';
 
-export default function About() {
+export default function About(): ReactNode {
     return (
         <main>
             <div className='mainDivAbout'>

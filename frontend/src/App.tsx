@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Highscores from './pages/Highscores/Highscores';
@@ -7,7 +8,7 @@ import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import './App.css';
 
-function App() {
+function App(): ReactNode {
   return (
     <BrowserRouter>
       <div className='app-wrapper'>

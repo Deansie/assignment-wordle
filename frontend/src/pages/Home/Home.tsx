@@ -1,6 +1,7 @@
 import './Home.css'
+import { ReactNode } from 'react';
 
-export default function Home() {
+export default function Home(): ReactNode {
     return (
         <main>
             <div className='mainDivHome'>

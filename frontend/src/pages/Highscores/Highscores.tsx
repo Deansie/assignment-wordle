@@ -1,6 +1,7 @@
 import './Highscores.css'
+import { ReactNode } from 'react';
 
-export default function Highscores() {
+export default function Highscores(): ReactNode {
     return (
         <main>
             <div className='mainDivHighScores'>

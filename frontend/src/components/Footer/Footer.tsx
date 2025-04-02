@@ -1,6 +1,7 @@
 import './Footer.css'
+import { ReactNode } from 'react';
 
-export default function Footer() {
+export default function Footer(): ReactNode {
     return (
         <footer>
             <div className="mainDivFooter">

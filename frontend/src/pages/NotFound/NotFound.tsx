@@ -1,6 +1,7 @@
 import './NotFound.css'
+import { ReactNode } from 'react';
 
-export default function NotFound() {
+export default function NotFound(): ReactNode {
     return (
         <main>
             <div className="mainDivNotFound">
