@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ReactNode } from 'react';
 import './Navbar.css';
 
-export default function Navbar() {
+export default function Navbar(): ReactNode {
     const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
     const getLiClass = (path: string) => {
@@ -26,19 +27,22 @@ export default function Navbar() {
                     <ul>
                         <li
                             className={getLiClass('/')}
-                            onMouseEnter={() => setHoveredLink('/')}>
+                            onMouseEnter={() => setHoveredLink('/')}
+                            onFocus={() => setHoveredLink('/')}>
                             <Link to="/" onClick={() => setHoveredLink(null)}>Home</Link>
                         </li>
 
                         <li
                             className={getLiClass('/highscores')}
-                            onMouseEnter={() => setHoveredLink("/highscores")}>
+                            onMouseEnter={() => setHoveredLink("/highscores")}
+                            onFocus={() => setHoveredLink('/highscores')}>
                             <Link to="/highscores" onClick={() => setHoveredLink(null)}>Highscores</Link>
                         </li>
 
                         <li
                             className={getLiClass('/about')}
-                            onMouseEnter={() => setHoveredLink("/about")}>
+                            onMouseEnter={() => setHoveredLink("/about")}
+                            onFocus={() => setHoveredLink('/about')}>
                             <Link to="/about" onClick={() => setHoveredLink(null)}>About</Link>
                         </li>
                     </ul>
