@@ -6,7 +6,9 @@ export default function Navbar() {
     const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
     const getLiClass = (path: string) => {
-        return hoveredLink === path ? 'nav-item--hovered' : '';
+        const isHovered = hoveredLink === path ? 'nav-item--hovered' : '';
+        const isActive = location.pathname === path ? 'nav-item--active' : '';
+        return `${isHovered}, ${isActive}`.trim();
     }
 
     return (
@@ -24,26 +26,20 @@ export default function Navbar() {
                     <ul>
                         <li
                             className={getLiClass('/')}
-                            onMouseEnter={() => setHoveredLink('/')}
-                            onMouseLeave={() => setHoveredLink(null)}
-                        >
-                            <Link to="/">Home</Link>
+                            onMouseEnter={() => setHoveredLink('/')}>
+                            <Link to="/" onClick={() => setHoveredLink(null)}>Home</Link>
                         </li>
 
                         <li
                             className={getLiClass('/highscores')}
-                            onMouseEnter={() => setHoveredLink("/highscores")}
-                            onMouseLeave={() => setHoveredLink(null)}
-                        >
-                            <Link to="/highscores">Highscores</Link>
+                            onMouseEnter={() => setHoveredLink("/highscores")}>
+                            <Link to="/highscores" onClick={() => setHoveredLink(null)}>Highscores</Link>
                         </li>
 
                         <li
                             className={getLiClass('/about')}
-                            onMouseEnter={() => setHoveredLink("/about")}
-                            onMouseLeave={() => setHoveredLink(null)}
-                        >
-                            <Link to="/about">About</Link>
+                            onMouseEnter={() => setHoveredLink("/about")}>
+                            <Link to="/about" onClick={() => setHoveredLink(null)}>About</Link>
                         </li>
                     </ul>
                 </nav>
