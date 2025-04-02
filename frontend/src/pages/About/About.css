@@ -5,11 +5,12 @@
     flex-direction: column;
     justify-content: center;
     margin: auto;
-    
     padding: 10px;
-    background-color: #EAD9C6;
-    border: 2px solid #5A4638;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    background-color: #ffffff;
+    margin-top: -1rem;
 
     }
+
+div {
+    text-align: center;
+}

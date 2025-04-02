@@ -4,7 +4,7 @@ export default function Highscores() {
     return (
         <main>
             <div className='mainDivHighScores'>
-                <h1>Highest scores</h1>
+                <h2>Highest scores</h2>
                 <div>
                 <table>
                     <thead>
