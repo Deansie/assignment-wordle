@@ -22,10 +22,11 @@
     gap: 20px;    
     padding-bottom: 1rem;
     
-    h1 {
+    span {
         text-decoration: underline;
         text-underline-offset: 0.4rem;
-        padding: 0.2rem
+        padding: 0.4rem
+        
     }
 }
 

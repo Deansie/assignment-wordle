@@ -16,12 +16,14 @@ export default function Navbar(): ReactNode {
         <header>
             <div className="mainDivNavbar">
                 <div className="titleContainer">
-                <h1>W</h1>
-                <h1>O</h1>
-                <h1>R</h1>
-                <h1>D</h1>
-                <h1>L</h1>
-                <h1>E</h1>
+                    <h1 aria-label="Wordle">
+                        <span>W</span>
+                        <span>O</span>
+                        <span>R</span>
+                        <span>D</span>
+                        <span>L</span>
+                        <span>E</span>
+                    </h1>
                 </div>
                 <nav>
                     <ul>
