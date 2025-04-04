@@ -1,7 +1,31 @@
 import './Highscores.css'
 import { ReactNode } from 'react';
 
-export default function Highscores(): ReactNode {
+interface Highscore {
+    name: string;
+    time: string;
+    guesses: number;
+    wordLength: string;
+    uniqueLetter: string;
+}
+
+interface HighscoresProps {
+    initialHighscores?: Highscore[]; 
+}
+
+export default function Highscores({initialHighscores = [] }: HighscoresProps): ReactNode {
+    
+    if (!initialHighscores || initialHighscores.length === 0)  {
+    
+        return (
+            <main>
+                <div className='mainDivHighScores'>
+                    <h2>Highest scores</h2>
+                    <p>No highscores available</p>             
+                </div>
+            </main>
+    )};
+
     return (
         <main>
             <div className='mainDivHighScores'>
@@ -18,62 +42,15 @@ export default function Highscores(): ReactNode {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
+                        {initialHighscores.map((score, index) => (
+                        <tr key={index}>
+                            <td>{score.name}</td>
+                            <td>{score.time}</td>
+                            <td>{score.guesses}</td>
+                            <td>{score.wordLength}</td>
+                            <td>{score.uniqueLetter}</td>
                         </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
+                        ))};
                     </tbody>
                 </table>
                 
@@ -82,7 +59,6 @@ export default function Highscores(): ReactNode {
             
         </main>
     );
-  }
-
+}
 
   
