@@ -14,5 +14,18 @@ header, main {
 
 }
 
-
+  
+.mainDivHighScores {
+    
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 10px;
+    background-color: #ffffff;
+    margin-top: -1rem;
+    border-radius: 4px;
+    
+    }
 

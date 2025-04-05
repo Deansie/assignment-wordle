@@ -1,88 +1,28 @@
 import './Highscores.css'
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 export default function Highscores(): ReactNode {
-    return (
-        <main>
-            <div className='mainDivHighScores'>
-                <h2>Highest scores</h2>
-                <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Time</th>
-                            <th>Guesses</th>
-                            <th>Wordlength</th>
-                            <th>Unique letter</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Deansie</td>
-                            <td>5 min 04 sec</td>
-                            <td>4</td>
-                            <td>5 letters</td>
-                            <td>Yes</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                </div>
-            </div>
-            
-        </main>
-    );
-  }
+    
+    const [highScoresHtml, setHighScoresHtml] = useState<string>('');
+
+    useEffect(() => {
+        fetch('/api/highscores')
+            .then((response) => response.text())
+            .then((html) => {
+                setHighScoresHtml(html);
+            })
+            .catch((error) => {
+                console.error('Error fetching high scores:', error);
+                setHighScoresHtml ('<div>Error loading high scores</div>');
+            })
+        }, []);
+    
+        return (
+            <main>
+                <div dangerouslySetInnerHTML={{ __html: highScoresHtml }} />
+            </main>
+        );
+    }
 
 
   
