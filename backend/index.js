@@ -8,17 +8,6 @@ app.use(express.json());
 
 app.use(express.static("../frontend/dist"));
 
-const highScores = [
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'No' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-  ];
-
 /* API-ENDPOINTS - Work in progress!
 
 app.post("/api/difficulty", (req, res) => {
@@ -44,50 +33,25 @@ app.post("/api/highscores", (req, res) => {
 })
 */
 
-
 app.get("/api/highscores", (req, res) => {
 
-    const tableRows = highScores
-
-    .map((score) =>
-    `
-    <tr>
-        <td>${score.name}</td>
-        <td>${score.time}</td>
-        <td>${score.guesses}</td>
-        <td>${score.wordLength}</td>
-        <td>${score.uniqueLetter}</td>
-    </tr>
-    `
-    ).join('');
-
-    const html = `
-      <main>
-      <div class="mainDivHighScores">
-        <h2>Highest scores</h2>
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Time</th>
-                <th>Guesses</th>
-                <th>Wordlength</th>
-                <th>Unique letter</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tableRows}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
-  `;
-
-  res.setHeader('Content-Type', 'text/html');
-  res.send(html);
-
+      try {
+        const highScores = [
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'No' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+          { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
+        ];
+        res.json(highScores);
+      
+      } catch (error) {
+        console.error('Error fetching high scores:', error);
+        res.status(500).json({ error: 'Internal server error: Could not fetch high scores'})
+      }
 });
 
 app.get("*", async (req, res) => {
