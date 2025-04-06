@@ -9,13 +9,4 @@ export default defineConfig({
       "/": "http://localhost:5081"
     }
   },
-  build: {
-    sourcemap: false, // Disable source maps
-    rollupOptions: {
-      output: {
-        sourcemap: false,
-        sourcemapExcludeSources: true, 
-      },
-    },
-  },
 })
