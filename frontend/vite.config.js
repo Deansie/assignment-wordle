@@ -8,5 +8,8 @@ export default defineConfig({
     proxy: {
       "/": "http://localhost:5081"
     }
+  },
+  build: {
+    sourcemap: false, // Disables source maps in production code
   }
 })
