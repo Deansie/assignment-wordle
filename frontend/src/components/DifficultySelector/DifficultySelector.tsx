@@ -1,36 +1,59 @@
-// import { useState } from "react";
-
+import { useState } from "react";
+import GameUI from "../GameUI/GameUI";
 import { ReactNode } from 'react';
 import './DifficultySelector.css';
 
 export default function DifficultySelector(): ReactNode {
 
+    interface GameStartProps {
+        letterCount: number;
+        allowRepeatingLetters: boolean;
+    }
     
-       
-    return (
+    const GameStart = ({letterCount, allowRepeatingLetters}: GameStartProps): ReactNode => {
+        return (
+            <GameUI letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} />
+        )
+    }
+
+    const [letterCount, setLetterCount] = useState<number>(3);
+    const [allowRepeatingLetters, setAllowRepeatingLetters] = useState<boolean>(true);
+    const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+
+    const difficultyUI = (
     <div className='difficultyDiv'>
         <span>
             <label>Number of letters:</label>
-                <select aria-label='Number of letters' className='selectLetters'>
-                    <option value="threeLetters">3</option>
-                    <option value="fourLetters">4</option>
-                    <option value="fiveLetters">5</option>
-                    <option value="sixLetters">6</option>
-                    <option value="sevenLetters">7</option>
-                    <option value="eightLetters">8</option>
-                    <option value="nineLetters">9</option>
+                <select aria-label='Number of letters' className='selectLetters'
+                value={letterCount.toString()} onChange={(s) => setLetterCount(parseInt(s.target.value))}>
+                    
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
                 </select>
         </span>
         <span>
             <label>Allow repeating letters:</label>
-            <select aria-label='Allow repeating letters' className='selectRepeatingLetters'>
+            <select aria-label='Allow repeating letters' className='selectRepeatingLetters'
+            value={allowRepeatingLetters ? 'yes' : 'no'} onChange={(s) => setAllowRepeatingLetters(s.target.value === 'yes')}>
                 <option value="yes">Yes</option>
                 <option value="no">No</option> 
             </select>
         </span>
         <span className='startButtonSpan'>
-            <button aria-label='Play-button'>Play!</button>
+            <button onClick={() => setIsGameStarted(true)} aria-label='Play-button'>Play!</button>
         </span>
     </div>
+    );
+
+    return isGameStarted ? (
+        <GameStart letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} /> 
+    ):(
+        difficultyUI
     )
+    
 }
