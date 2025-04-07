@@ -7,6 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/": "http://localhost:5081"
+    },
+    watch: {
+      usePolling: true,
+      interval: 100 // Poll every 100ms
     }
   },
 })
