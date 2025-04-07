@@ -1,4 +1,32 @@
 .difficultyDiv {
     margin-bottom: 3rem;
-    text-align: left;
+    text-align: center;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 10px;
+    background-color: #ffffff;
+    
+}
+
+.startButtonSpan {
+    button {
+        font-size: x-large;
+        justify-content: center;
+        margin: auto;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.selectLetters {
+    margin-left: 4rem;
+}
+
+.selectRepeatingLetters {
+    margin-left: 1rem;
+    margin-top: 1rem;
+
 }

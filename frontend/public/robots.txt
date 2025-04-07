@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /api/
+Allow: /
+Allow: /highscores
+Allow: /about

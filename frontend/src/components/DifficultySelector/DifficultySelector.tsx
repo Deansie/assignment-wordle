@@ -10,24 +10,26 @@ export default function DifficultySelector(): ReactNode {
     return (
     <div className='difficultyDiv'>
         <span>
-            <span className='letterChooserSpan'>
-                <select>
-                    <option value="fourLetters">4 letters</option>
-                    <option value="fiveLetters">5 letters</option>
-                    <option value="sixLetters">6 letters</option>
-                    <option value="sevenLetters">7 letters</option>
-                    <option value="eightLetters">8 letters</option>
-                    <option value="nineLetters">9 letters</option>
+            <label>Number of letters:</label>
+                <select aria-label='Number of letters' className='selectLetters'>
+                    <option value="threeLetters">3</option>
+                    <option value="fourLetters">4</option>
+                    <option value="fiveLetters">5</option>
+                    <option value="sixLetters">6</option>
+                    <option value="sevenLetters">7</option>
+                    <option value="eightLetters">8</option>
+                    <option value="nineLetters">9</option>
                 </select>
-            </span>
-            <span className='repeatingLettersSpan'>
-                <input type= "checkbox"/>
-                <label>Allow repeating letters</label>
-                
-            </span>
+        </span>
+        <span>
+            <label>Allow repeating letters:</label>
+            <select aria-label='Allow repeating letters' className='selectRepeatingLetters'>
+                <option value="yes">Yes</option>
+                <option value="no">No</option> 
+            </select>
         </span>
         <span className='startButtonSpan'>
-            <input type= "button"/>
+            <button aria-label='Play-button'>Play!</button>
         </span>
     </div>
     )

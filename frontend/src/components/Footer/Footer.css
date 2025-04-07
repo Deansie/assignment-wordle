@@ -16,7 +16,8 @@ footer {
 
     a {
         text-decoration: none;
-        color: #007bff;
+        color: #0066CC;
+        font-weight: 500;
     }
 
     a:hover {

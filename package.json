@@ -1,0 +1,12 @@
+{
+    "name": "assignment-wordle",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "dev": "concurrently \"cd frontend && npm run dev:frontend\" \"cd backend && npm run dev:backend\"",
+      "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+    },
+    "devDependencies": {
+      "concurrently": "^8.2.2"
+    }
+  }
