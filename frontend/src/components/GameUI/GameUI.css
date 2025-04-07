@@ -1,0 +1,12 @@
+.gameUiDiv {
+    margin-bottom: 3rem;
+    text-align: center;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 10px;
+    background-color: #ffffff;
+    
+}

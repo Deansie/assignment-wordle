@@ -21,7 +21,9 @@ export default function DifficultySelector(): ReactNode {
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
 
     const difficultyUI = (
+        
     <div className='difficultyDiv'>
+        <h2>Select difficulty</h2>
         <span>
             <label>Number of letters:</label>
                 <select aria-label='Number of letters' className='selectLetters'

@@ -6,7 +6,6 @@ export default function Home(): ReactNode {
     return (
         <main>
             <div className='mainDivHome'>
-            <h2>Select difficulty</h2>
             <DifficultySelector />
             </div>
        </main>
