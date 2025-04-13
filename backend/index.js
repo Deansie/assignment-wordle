@@ -1,12 +1,50 @@
 import fs from 'fs/promises'
 import express from "express";
+import { MongoClient } from 'mongodb';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 5081;
+const uri = 'mongodb://localhost:27017';
+const client = new MongoClient(uri);
 
+app.use(cors({ origin: 'https://localhost:5081' }));
 app.use(express.json());
 
 app.use(express.static("../frontend/dist"));
+
+async function getRandomWord(length, allowRepeatingLetters) {
+  try {
+    await client.connect();
+    const db = client.db('wordleGame');
+    const doc = await db.collection('wordLists').findOne({ length });
+    if (!doc?.words?.length) throw new Error(`No ${length}-letter words found`);
+
+    let words = doc.words;
+    if (!allowRepeatingLetters) {
+      words = words.filter(word => new Set(word.toLowerCase().split('')).size === word.length);
+    }
+    if (!words.length) throw new Error(`Ǹo ${length}-letter words without repeating letters found`);
+    
+      return words[math.floor(Math.random() * words.length)];
+  } finally {
+    await client.close();
+  }
+}
+
+app.get('/api/random-word', async (req, res) => {
+  const { length, allowRepeatingLetters } = req.query;
+  const lengthNum = parseInt(length);
+  if (![4, 5, 6, 7, 8, 9].includes(lengthNum)) {
+    return res.status(400).json({ error: 'Invalid word length. Must be 4–9.' });
+  }
+  try {
+    const word = await getRandomWord(lengthNum, allowRepeatingLetters === 'true');
+    res.json({ word: word.toUpperCase() });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 /* API-ENDPOINTS - Work in progress!
 

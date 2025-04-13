@@ -17,35 +17,43 @@ interface Guess {
     )[];
 }
 
-// Mocked wordlist initially
-const wordLists: { [key: number]: string[] } = {
-    4: ['CAKE', 'BITE', 'FUSE', 'GLOW'],
-    5: ['APPLE', 'HOUSE', 'CANDY', 'BREAD', 'FLAME'],
-    6: ['CANDLE', 'BRIDGE', 'FROZEN'],
-  };
-
 // Filter words based on difficulty selection
-const getRandomWord = (letterCount: number, allowRepeatingLetters: boolean): string => {
-    const words = wordLists[letterCount] || [];
-    const filteredWords = allowRepeatingLetters 
-    ? words 
-    : words.filter(word => new Set(word.split('')).size === word.length);
-    if (filteredWords.length === 0) throw new Error(`No ${letterCount}-letter words available`);
-    return filteredWords[Math.floor(Math.random() * filteredWords.length)];
-    
+async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean): Promise<string> {
+    const response = await fetch(
+        `/api/random-word?length=${letterCount}&allowRepeatingLetters=${allowRepeatingLetters}`,
+        { cache: 'no-store' }
+    );
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch word');
+    }
+    const data = await response.json();
+    return data.word;
 }
 
 export default function GameUI({ letterCount, allowRepeatingLetters }: GameUIProps): ReactNode {
-    const [targetWord, setTargetWord] = useState(() => getRandomWord(letterCount, allowRepeatingLetters));
+    const [targetWord, setTargetWord] = useState<string>('');
     const [guesses, setGuesses] = useState<Guess[]>([]);
     const [currentGuess, setCurrentGuess] = useState('');
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
+
+    useEffect(() => {
+        const fetchWord = async () => {
+            try {
+                const word = await getRandomWord(letterCount, allowRepeatingLetters);
+                setTargetWord(word);
+            } catch (error) {
+                console.error ('Error fetching word:', error)
+            }
+        }
+        fetchWord();
+    }, [letterCount, allowRepeatingLetters]);
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
         if (gameState !== 'playing' || currentGuess.length !== letterCount) return;
 
-        const algoResult = algorithmA(currentGuess,targetWord);
+        const algoResult = algorithmA(currentGuess, targetWord);
         const labels = algoResult.labelLetters(currentGuess.toUpperCase(), targetWord);
 
         const feedback = labels.map((label) => {
@@ -79,11 +87,16 @@ export default function GameUI({ letterCount, allowRepeatingLetters }: GameUIPro
             return () => window.removeEventListener('keydown', handleKeyPress);
         }, [gameState]);
 
-        const gameRestart = () => {
-            setTargetWord(getRandomWord(letterCount, allowRepeatingLetters));
-            setGuesses([]);
-            setCurrentGuess('');
-            setGameState('playing');
+        const gameRestart = async () => {
+            try {
+                const word = await getRandomWord(letterCount, allowRepeatingLetters);
+                setTargetWord(word);
+                setGuesses([]);
+                setCurrentGuess('');
+                setGameState('playing');
+            } catch (error) {
+                console.error('Error restarting game:', error)
+            }
         }
 
         let gameMessage
