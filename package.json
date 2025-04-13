@@ -4,7 +4,9 @@
     "private": true,
     "scripts": {
       "dev": "concurrently \"cd frontend && npm run dev:frontend\" \"cd backend && npm run dev:backend\"",
-      "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+      "install-frontend": "npm install --prefix frontend",
+      "install-backend": "npm install --prefix backend",
+      "postinstall": "npm run install-frontend && npm run install-backend"
     },
     "devDependencies": {
       "concurrently": "^8.2.2"
