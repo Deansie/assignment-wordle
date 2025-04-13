@@ -16,7 +16,7 @@ export default function DifficultySelector(): ReactNode {
         )
     }
 
-    const [letterCount, setLetterCount] = useState<number>(3);
+    const [letterCount, setLetterCount] = useState<number>(4);
     const [allowRepeatingLetters, setAllowRepeatingLetters] = useState<boolean>(true);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
 
@@ -29,7 +29,6 @@ export default function DifficultySelector(): ReactNode {
                 <select aria-label='Number of letters' className='selectLetters'
                 value={letterCount.toString()} onChange={(s) => setLetterCount(parseInt(s.target.value))}>
                     
-                    <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
                     <option value="6">6</option>
