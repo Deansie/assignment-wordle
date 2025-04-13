@@ -26,7 +26,7 @@ async function getRandomWord(length, allowRepeatingLetters) {
     }
     if (!words.length) throw new Error(`Ǹo ${length}-letter words without repeating letters found`);
     
-      return words[math.floor(Math.random() * words.length)];
+      return words[Math.floor(Math.random() * words.length)];
   } finally {
     await client.close();
   }
