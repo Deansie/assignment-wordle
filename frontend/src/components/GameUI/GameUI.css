@@ -53,16 +53,13 @@
     color: white;
   }
 
-.guessInput {
+.guessInput, .guessButton {
     font-size: large;
+    margin-top: 1rem;
+    width: fit-content;
 }
 
-.guessButton {
+.returnButton, .restartButton {
     font-size: large;
-}
-
-
-
-.returnButton {
-    font-size: large;
+    
 }

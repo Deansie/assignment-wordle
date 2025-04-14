@@ -2,7 +2,6 @@ import { FormEvent, useEffect, useState } from "react";
 import { ReactNode } from 'react';
 import { algorithmA } from "../../pages/Home/algorithms";
 import './GameUI.css';
-import DifficultySelector from "../DifficultySelector/DifficultySelector";
 
 interface GameUIProps {
     letterCount: number;
