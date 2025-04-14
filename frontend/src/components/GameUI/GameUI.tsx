@@ -2,10 +2,12 @@ import { FormEvent, useEffect, useState } from "react";
 import { ReactNode } from 'react';
 import { algorithmA } from "../../pages/Home/algorithms";
 import './GameUI.css';
+import DifficultySelector from "../DifficultySelector/DifficultySelector";
 
 interface GameUIProps {
     letterCount: number;
     allowRepeatingLetters: boolean;
+    onReturn: () => void;
 }
 
 interface Guess {
@@ -31,7 +33,7 @@ async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean
     return data.word;
 }
 
-export default function GameUI({ letterCount, allowRepeatingLetters }: GameUIProps): ReactNode {
+export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }: GameUIProps): ReactNode {
     const [targetWord, setTargetWord] = useState<string>('');
     const [guesses, setGuesses] = useState<Guess[]>([]);
     const [currentGuess, setCurrentGuess] = useState('');
@@ -116,7 +118,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters }: GameUIPro
                 The correct word was: {targetWord}
                 </>
             )
-        }           
+        }            
 
     return  (
         <div className='gameUiDiv'>
@@ -156,17 +158,18 @@ export default function GameUI({ letterCount, allowRepeatingLetters }: GameUIPro
                                 disabled={gameState !== 'playing'}
                                 className="guessInput"
                             />
-                            <button type="submit" disabled={currentGuess.length !== letterCount}>
-                                Guess!
+                            <button className="guessButton" type="submit" disabled={currentGuess.length !== letterCount}>
+                                Guess
                             </button>
                         </form>
                     ) : (
                         <button className="restartButton" onClick={gameRestart}>
-                            Play again!
+                            Play again
                         </button>
                     )}
                 </span>
                 <h2>{secondMessage}</h2>
+                <button className="returnButton" onClick={onReturn}>Return to main menu</button>
         </div>
     );
 }

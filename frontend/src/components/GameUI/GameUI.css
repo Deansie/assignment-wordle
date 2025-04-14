@@ -53,3 +53,16 @@
     color: white;
   }
 
+.guessInput {
+    font-size: large;
+}
+
+.guessButton {
+    font-size: large;
+}
+
+
+
+.returnButton {
+    font-size: large;
+}

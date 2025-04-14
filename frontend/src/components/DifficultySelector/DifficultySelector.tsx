@@ -8,17 +8,23 @@ export default function DifficultySelector(): ReactNode {
     interface GameStartProps {
         letterCount: number;
         allowRepeatingLetters: boolean;
+        onReturn: () => void;
     }
     
-    const GameStart = ({letterCount, allowRepeatingLetters}: GameStartProps): ReactNode => {
+    const GameStart = ({letterCount, allowRepeatingLetters, onReturn}: GameStartProps): ReactNode => {
         return (
-            <GameUI letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} />
+            <GameUI letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} onReturn={onReturn}/>
         )
     }
 
     const [letterCount, setLetterCount] = useState<number>(4);
     const [allowRepeatingLetters, setAllowRepeatingLetters] = useState<boolean>(true);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+    const returnToDifficulty = () => {
+        console.log('Return to difficulty selection')
+        setIsGameStarted(false);
+
+    }
 
     const difficultyUI = (
         
@@ -46,13 +52,13 @@ export default function DifficultySelector(): ReactNode {
             </select>
         </span>
         <span className='startButtonSpan'>
-            <button onClick={() => setIsGameStarted(true)} aria-label='Play-button'>Play!</button>
+            <button onClick={() => setIsGameStarted(true)} aria-label='Play-button'>Start game</button>
         </span>
     </div>
     );
 
     return isGameStarted ? (
-        <GameStart letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} /> 
+        <GameStart letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} onReturn={returnToDifficulty}/> 
     ):(
         difficultyUI
     )
