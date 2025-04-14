@@ -56,11 +56,14 @@
 .guessInput, .guessButton {
     font-size: large;
     margin-top: 1rem;
-    width: fit-content;
+   
 }
 
 .returnButton, .restartButton {
     font-size: large;
+    width: fit-content;
+    margin: auto;
+    
 }
 
 .scoreSubmitButton {
