@@ -61,5 +61,10 @@
 
 .returnButton, .restartButton {
     font-size: large;
-    
+}
+
+.scoreSubmitButton {
+    font-size: large;
+    margin-bottom: 2rem;
+    margin-top: -1rem;
 }

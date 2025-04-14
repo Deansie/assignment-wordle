@@ -102,10 +102,20 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
 
         let gameMessage
         let secondMessage 
+        let scoreSubmit
         if (gameState === 'playing') {
             gameMessage = 'Game started';
         } else if (gameState === 'won') {
-            gameMessage = 'Congratulations, you won!';
+            gameMessage = (
+                <>
+                Congratulations, you won!
+                </>
+            )
+            scoreSubmit = (
+                <>
+                <button className="scoreSubmitButton">Submit your score</button>
+                </>
+            )
         } else {
             gameMessage = (
                 <>
@@ -117,6 +127,8 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
                 The correct word was: {targetWord}
                 </>
             )
+            
+
         }            
 
     return  (
@@ -168,6 +180,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
                     )}
                 </span>
                 <h2>{secondMessage}</h2>
+                <span>{scoreSubmit}</span>
                 <button className="returnButton" onClick={onReturn}>Return to main menu</button>
         </div>
     );
