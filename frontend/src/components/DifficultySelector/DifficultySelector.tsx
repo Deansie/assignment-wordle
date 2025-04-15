@@ -9,22 +9,52 @@ export default function DifficultySelector(): ReactNode {
         letterCount: number;
         allowRepeatingLetters: boolean;
         onReturn: () => void;
+        onSubmitHighscore: (HighscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
     }
     
-    const GameStart = ({letterCount, allowRepeatingLetters, onReturn}: GameStartProps): ReactNode => {
+    const GameStart = ({letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore}: GameStartProps): ReactNode => {
         return (
-            <GameUI letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} onReturn={onReturn}/>
+            <GameUI 
+            letterCount={letterCount} 
+            allowRepeatingLetters={allowRepeatingLetters} 
+            onReturn={onReturn} 
+            onSubmitHighscore={onSubmitHighscore}
+            />
         )
     }
 
     const [letterCount, setLetterCount] = useState<number>(4);
     const [allowRepeatingLetters, setAllowRepeatingLetters] = useState<boolean>(true);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+
     const returnToDifficulty = () => {
         console.log('Return to difficulty selection')
         setIsGameStarted(false);
-
+        setLetterCount(prev => prev)
     }
+
+    const submitHighscore = async (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => {
+        try {
+            const response = await fetch ('/api/highscores', {
+                method: 'POST',
+                headers: { ' Content-type': 'application/json' },
+                body: JSON.stringify({
+                    name: highscoreData.name,
+                    time: '0 min 0 sec',
+                    guesses: highscoreData.guesses,
+                    wordLength: highscoreData.wordLength,
+                    uniqueLetters: highscoreData.uniqueLetter,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to submit highscore');
+            }
+            console.log('Highscore submittet successfully');
+            } catch (error) {
+                 console.error('Error submitting highscore:', error);
+            }
+        }
+    
 
     const difficultyUI = (
         
@@ -58,7 +88,12 @@ export default function DifficultySelector(): ReactNode {
     );
 
     return isGameStarted ? (
-        <GameStart letterCount={letterCount} allowRepeatingLetters={allowRepeatingLetters} onReturn={returnToDifficulty}/> 
+        <GameStart 
+        letterCount={letterCount} 
+        allowRepeatingLetters={allowRepeatingLetters} 
+        onReturn={returnToDifficulty}
+        onSubmitHighscore={submitHighscore}
+        /> 
     ):(
         difficultyUI
     )

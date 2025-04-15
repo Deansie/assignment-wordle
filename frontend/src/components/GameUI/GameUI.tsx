@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { ReactNode } from 'react';
 import { algorithmA } from "../../pages/Home/algorithms";
+import HighscoreSubmit from "../HighscoreSubmit/HighscoreSubmit";
 import './GameUI.css';
 
 interface GameUIProps {
@@ -18,6 +19,10 @@ interface Guess {
     )[];
 }
 
+interface HighscoreProps {
+    onSubmitHighscore: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
+}
+
 // Filter words based on difficulty selection
 async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean): Promise<string> {
     const response = await fetch(
@@ -32,11 +37,12 @@ async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean
     return data.word;
 }
 
-export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }: GameUIProps): ReactNode {
+export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore }: GameUIProps & HighscoreProps): ReactNode {
     const [targetWord, setTargetWord] = useState<string>('');
     const [guesses, setGuesses] = useState<Guess[]>([]);
     const [currentGuess, setCurrentGuess] = useState('');
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
+    const [showHighscoreForm, setShowHighscoreForm] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchWord = async () => {
@@ -100,6 +106,19 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
             }
         }
 
+        const handleShowHighscoreForm = () => {
+            setShowHighscoreForm(true);
+        }
+
+        const handleCancelHighscore = () => {
+            setShowHighscoreForm(false);
+        } 
+
+        const handleSubmitHighscore = (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string}) => {
+            onSubmitHighscore(highscoreData);
+            setShowHighscoreForm(false);
+        }
+
         let gameMessage
         let secondMessage 
         let scoreSubmit
@@ -113,7 +132,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
             )
             scoreSubmit = (
                 <>
-                <button className="scoreSubmitButton">Submit your score</button>
+                <button className="scoreSubmitButton" onClick={handleShowHighscoreForm}>Submit your score</button>
                 </>
             )
         } else {
@@ -127,9 +146,19 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn }:
                 The correct word was: {targetWord}
                 </>
             )
-            
-
-        }            
+        }
+        
+        if (showHighscoreForm) {
+            return (
+                <HighscoreSubmit
+                guesses={guesses.length} 
+                wordLength={letterCount} 
+                uniqueLetter={allowRepeatingLetters} 
+                onSubmit={handleSubmitHighscore} 
+                onCancel={handleCancelHighscore}
+                />
+            )
+        }
 
     return  (
         <div className='gameUiDiv'>

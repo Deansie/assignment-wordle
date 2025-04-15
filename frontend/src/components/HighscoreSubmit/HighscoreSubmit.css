@@ -1,0 +1,36 @@
+.formWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+}
+
+.highscoreSubmitButtonsDiv {
+    display: inline-block;
+}
+
+.submitButton, .cancelButton {
+    font-size: large;
+    width: fit-content;
+    margin: 1rem;
+}
+
+.submitForm {
+    align-items: center;
+    margin-left: 1rem;
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+
+    input {
+        font-size: large;
+        max-width: 60%;
+        text-align: center;
+    }
+
+}
+
+.guessSpan, .wordLengthSpan, .uniqueLetterSpan {
+    color: #005B00;
+    font-weight: 500;
+
+}
