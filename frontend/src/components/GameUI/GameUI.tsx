@@ -67,6 +67,26 @@ async function submitGuess(guess: string, gameId: string, letterCount: number): 
     }
 }
 
+async function getTargetWord(gameId: string): Promise<string> {
+    try {
+        const response = await fetch('/api/get-target-word', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({gameId}),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to get the target word');
+        }
+
+    const data = await response.json();
+    return data.targetWord;
+    } catch (error) {
+        console.error('Error fetching target word', error);
+        throw error;
+    }
+}
+
 export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore }: GameUIProps & HighscoreProps): ReactNode {
     const [gameId, setGameId] = useState<string>('');
     const [guesses, setGuesses] = useState<Guess[]>([]);
@@ -75,6 +95,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
     const [showHighscoreForm, setShowHighscoreForm] = useState<boolean>(false);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [targetWord, setTargetWord] = useState<string>('');
     
     useEffect(() => {
         let timer: number;
@@ -105,6 +126,20 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
         initGame();
     }, [letterCount, allowRepeatingLetters]);
 
+    useEffect(() => {
+        if (gameState === 'lost' && gameId) {
+            const fetchWord = async () => {
+                try {
+                    const word = await getTargetWord(gameId);
+                    setTargetWord(word)
+                } catch (error) {
+                    console.error('Error fetching target word:', error);
+                }
+            };
+            fetchWord();
+        }
+    }, [gameState, gameId]);
+
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         if (gameState !== 'playing' || currentGuess.length !== letterCount || isSubmitting ) return;
@@ -130,6 +165,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
         }
     };
 
+    // Focuses the input-field when game is started and when non-winning guess has been entered
     useEffect(() => {
         if (gameState === 'playing' && !isSubmitting) {
             const input = document.querySelector('.guessInput') as HTMLInputElement 
@@ -199,9 +235,13 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                 Game over!
                 </>
             )          
-            secondMessage = (
+            secondMessage = targetWord ? (
                 <>
-                The correct word was is hidden for security reasons
+                The correct word was <strong>{targetWord}</strong>
+                </>
+            ) : (
+                <>
+                Loading the correct word...
                 </>
             )
         }
