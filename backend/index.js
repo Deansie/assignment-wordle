@@ -2,11 +2,16 @@ import fs from 'fs/promises'
 import express from "express";
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
+import crypto from 'crypto';
 
 const app = express();
 const port = process.env.PORT || 5081;
 const uri = 'mongodb://localhost:27017';
 const client = new MongoClient(uri);
+
+const SECRET_KEY = 'wordle-secret-key-12345678901234'; 
+const ALGORITHM = 'aes-256-cbc';
+const IV_LENGTH = 16;
 
 app.use(cors({ origin: 'https://localhost:5081' }));
 app.use(express.json());
@@ -40,32 +45,24 @@ app.get('/api/random-word', async (req, res) => {
   }
   try {
     const word = await getRandomWord(lengthNum, allowRepeatingLetters === 'true');
-    res.json({ word: word.toUpperCase() });
+    const wordUpper = word.toUpperCase();
+    console.log('Plaintext word:', wordUpper); // Log plaintext
+
+    const iv = crypto.randomBytes(IV_LENGTH);
+    const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(SECRET_KEY), iv);
+    let encrypted = cipher.update(wordUpper, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const encryptedWord = `${iv.toString('hex')}:${encrypted}`;
+    console.log('Encrypted word:', encryptedWord);
+
+    res.json({encryptedWord})
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-/* API-ENDPOINTS - Work in progress!
-
-app.post("/api/difficulty", (req, res) => {
-    req.body()
-    res.json()
-})
-
-app.get("/api/game", (req, res) => {
-    res.json(data)
-})
-
-app.post("/api/guesses", (req, res) => {
-    const userGuess = req.body.guess()
-    res.json({ result: "success" })
-})
-
-app.get("/api/guesses", (req, res) => {
-
-})
-
+/*
 app.post("/api/highscores", (req, res) => {
 
 })

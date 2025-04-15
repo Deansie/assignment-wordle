@@ -2,7 +2,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { ReactNode } from 'react';
 import { algorithmA } from "../../pages/Home/algorithms";
 import HighscoreSubmit from "../HighscoreSubmit/HighscoreSubmit";
+import CryptoJS from 'crypto-js';
 import './GameUI.css';
+
 
 interface GameUIProps {
     letterCount: number;
@@ -23,18 +25,43 @@ interface HighscoreProps {
     onSubmitHighscore: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
 }
 
+const SECRET_KEY = 'wordle-secret-key-12345678901234'; // Needs to be moved in real production
+
 // Filter words based on difficulty selection
 async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean): Promise<string> {
-    const response = await fetch(
-        `/api/random-word?length=${letterCount}&allowRepeatingLetters=${allowRepeatingLetters}`,
-        { cache: 'no-store' }
-    );
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch word');
+    try {
+        const response = await fetch(
+            `/api/random-word?length=${letterCount}&allowRepeatingLetters=${allowRepeatingLetters}`,
+            { cache: 'no-store' }
+        );
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to fetch word');
+        }
+        const data = await response.json();
+        const [ivHex, encrypted] = data.encryptedWord.split(':');
+        const iv = CryptoJS.enc.Hex.parse(ivHex);
+        const key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+        const encryptedBase64 = CryptoJS.enc.Hex.parse(encrypted).toString(CryptoJS.enc.Base64);
+        const decrypted = CryptoJS.AES.decrypt(
+            encryptedBase64,
+            key,
+            {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+            }
+        );
+        const decryptedWord = decrypted.toString(CryptoJS.enc.Utf8);
+        
+        if (!decryptedWord) {
+            throw new Error('Decryption failed: empty result');
+        }
+        return decryptedWord.toUpperCase();
+    } catch (error) {
+        console.error('Decryption error:', error);
+        throw error;
     }
-    const data = await response.json();
-    return data.word;
 }
 
 export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore }: GameUIProps & HighscoreProps): ReactNode {
