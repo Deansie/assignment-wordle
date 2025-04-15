@@ -254,6 +254,23 @@ app.get('/api/highscores', (req, res) => {
   }
 });
 
+// Endpoint to reveal the target word in the current session when the player has lost
+app.post('/api/get-target-word', (req, res) => {
+  const {gameId} = req.body;
+  if (!gameId) {
+    return res.status(400).json({ error: 'Missing game ID'});
+  }
+
+  const session = gameSessions.get(gameId);
+  if (!session) {
+    return res.status(400).json({ error: 'Game session not found'});
+  }
+
+  const targetWord = session.word;
+  gameSessions.delete(gameId);
+  res.json({targetWord});
+})
+
 app.get("*", async (req, res) => {
     try {
         const htmlText = await fs.readFile("../frontend/dist/index.html");
