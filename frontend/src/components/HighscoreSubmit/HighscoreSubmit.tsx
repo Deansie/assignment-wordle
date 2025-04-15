@@ -6,10 +6,11 @@ interface HighscoreSubmitProps {
     guesses: number;
     wordLength: number;
     uniqueLetter: boolean;
-    onSubmit: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
+    time: string;
+    onSubmit: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) => void;
     onCancel: () => void;
 }
-export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
+export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, time, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
 
     const [playerName, setPlayerName] = useState<string>('');
 
@@ -19,15 +20,18 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, onS
             alert('Please enter your name');
             return;
         }
-        onSubmit({
+        const highscoreData = {
             name: playerName.trim(),
             guesses: guesses,
             wordLength: `${wordLength} letters`,
             uniqueLetter: uniqueLetter ? 'Yes' : 'No',
-        });
+            time: time,
+        };
+        console.log('Highscore data submitted:', highscoreData);
+        onSubmit(highscoreData);
+
     };
-
-
+    
     return (
         <div className="highscoreSubmitDiv">
             <h2>Submit your results</h2>
@@ -36,6 +40,7 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, onS
                     <p>Number of Guesses: <span className="guessSpan">{guesses}</span></p>
                     <p>Word Length: <span className="wordLengthSpan">{wordLength} letters</span></p>
                     <p>Unique Letters: <span className="uniqueLetterSpan">{uniqueLetter ? 'Yes' : 'No'}</span></p>
+                    <p>Time: <span className="timeSpan">{time}</span></p>
                 </div>
                 <div className="formWrapper">
                     <div className="submitForm">

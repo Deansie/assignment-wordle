@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useEffect, useState } from "react";
 import { ReactNode } from 'react';
 import { algorithmA } from "../../pages/Home/algorithms";
 import HighscoreSubmit from "../HighscoreSubmit/HighscoreSubmit";
@@ -22,7 +22,14 @@ interface Guess {
 }
 
 interface HighscoreProps {
-    onSubmitHighscore: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
+    onSubmitHighscore: (
+        highscoreData: { 
+            name: string; 
+            guesses: number; 
+            wordLength: string; 
+            uniqueLetter: string;
+            time: string
+        }) => void;
 }
 
 const SECRET_KEY = 'wordle-secret-key-12345678901234'; // Needs to be moved in real production
@@ -70,12 +77,30 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
     const [currentGuess, setCurrentGuess] = useState('');
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
     const [showHighscoreForm, setShowHighscoreForm] = useState<boolean>(false);
+    const [elapsedTime, setElapsedTime] = useState<number>(0);
+
+    useEffect(() => {
+        let timer: number;
+        if (gameState === 'playing') {
+            timer = setInterval(() => {
+                setElapsedTime((prev) => prev + 1);
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [gameState]);
+
+    const formatTime = (seconds: number): string => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes} min ${secs} sec`;
+    }
 
     useEffect(() => {
         const fetchWord = async () => {
             try {
                 const word = await getRandomWord(letterCount, allowRepeatingLetters);
                 setTargetWord(word);
+                setElapsedTime(0);
             } catch (error) {
                 console.error ('Error fetching word:', error)
             }
@@ -128,6 +153,8 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                 setGuesses([]);
                 setCurrentGuess('');
                 setGameState('playing');
+                setElapsedTime(0);
+                setShowHighscoreForm(false);
             } catch (error) {
                 console.error('Error restarting game:', error)
             }
@@ -141,8 +168,8 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
             setShowHighscoreForm(false);
         } 
 
-        const handleSubmitHighscore = (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string}) => {
-            onSubmitHighscore(highscoreData);
+        const handleSubmitHighscore = (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
+            onSubmitHighscore( {...highscoreData, time: formatTime(elapsedTime)});
             setShowHighscoreForm(false);
         }
 
@@ -181,6 +208,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                 guesses={guesses.length} 
                 wordLength={letterCount} 
                 uniqueLetter={allowRepeatingLetters} 
+                time={formatTime(elapsedTime)}
                 onSubmit={handleSubmitHighscore} 
                 onCancel={handleCancelHighscore}
                 />
