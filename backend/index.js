@@ -2,16 +2,15 @@ import fs from 'fs/promises'
 import express from "express";
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
-import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
+import { algorithmA } from './algorithms.js'
 
 const app = express();
 const port = process.env.PORT || 5081;
 const uri = 'mongodb://localhost:27017';
 const client = new MongoClient(uri);
 
-const SECRET_KEY = 'wordle-secret-key-12345678901234'; 
-const ALGORITHM = 'aes-256-cbc';
-const IV_LENGTH = 16;
+const gameSessions = new Map();
 
 app.use(cors({ origin: 'https://localhost:5081' }));
 app.use(express.json());
@@ -37,30 +36,50 @@ async function getRandomWord(length, allowRepeatingLetters) {
   }
 }
 
-app.get('/api/random-word', async (req, res) => {
-  const { length, allowRepeatingLetters } = req.query;
+app.post('/api/start-game', async (req, res) => {
+  const { length, allowRepeatingLetters } = req.body;
   const lengthNum = parseInt(length);
   if (![4, 5, 6, 7, 8, 9].includes(lengthNum)) {
     return res.status(400).json({ error: 'Invalid word length. Must be 4–9.' });
   }
   try {
     const word = await getRandomWord(lengthNum, allowRepeatingLetters === 'true');
-    const wordUpper = word.toUpperCase();
-    console.log('Plaintext word:', wordUpper); // Log plaintext
-
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(SECRET_KEY), iv);
-    let encrypted = cipher.update(wordUpper, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    const encryptedWord = `${iv.toString('hex')}:${encrypted}`;
-    console.log('Encrypted word:', encryptedWord);
-
-    res.json({encryptedWord})
-
+    const gameId = uuidv4();
+    gameSessions.set(gameId, {word: word.toUpperCase(), letterCount: lengthNum });
+    res.json({ gameId })
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/api/guess', async (req, res) => {
+  const { guess, gameId, letterCount } = req.body;
+  if (!guess || !gameId || ! letterCount ) {
+    return res.status(400).json({ error: 'Missing guess, game id or letter count'})
+  }
+  if (guess.length !== parseInt(letterCount)) {
+    return res.status(400).json ({error: `Guess must be ${letterCount} letters`})
+  } 
+
+  const session = gameSessions.get(gameId);
+  if (!session) {
+    return res.status(400).json ({error: 'Game session not found'})
+  }
+
+  const targetWord = session.word;
+  const algoResult = algorithmA(guess, targetWord);
+  const labels = algoResult.labelLetters(guess.toUpperCase().split(''), targetWord.toUpperCase().split(''));
+
+  const feedback = labels.map(label => {
+    if (label.includes('incorrect')) return 'red';
+    if (label.includes('correct')) return 'green';
+    if (label.includes('misplaced')) return 'yellow';
+    return 'red'; 
+  });
+
+  const isCorrect = guess.toUpperCase() === targetWord;
+  res.json({ feedback, isCorrect })
+})
 
 /*
 app.post("/api/highscores", (req, res) => {

@@ -1,8 +1,6 @@
-import { FormEvent, use, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ReactNode } from 'react';
-import { algorithmA } from "../../pages/Home/algorithms";
 import HighscoreSubmit from "../HighscoreSubmit/HighscoreSubmit";
-import CryptoJS from 'crypto-js';
 import './GameUI.css';
 
 
@@ -32,53 +30,52 @@ interface HighscoreProps {
         }) => void;
 }
 
-const SECRET_KEY = 'wordle-secret-key-12345678901234'; // Needs to be moved in real production
-
-// Filter words based on difficulty selection
-async function getRandomWord(letterCount: number, allowRepeatingLetters: boolean): Promise<string> {
+async function startGame(letterCount: number, allowRepeatingLetters: boolean): Promise<string> {
     try {
-        const response = await fetch(
-            `/api/random-word?length=${letterCount}&allowRepeatingLetters=${allowRepeatingLetters}`,
-            { cache: 'no-store' }
-        );
+        const response = await fetch('/api/start-game', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ length: letterCount, allowRepeatingLetters }),
+        });
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to fetch word');
+            throw new Error(errorData.error || 'Failed to start game');
         }
         const data = await response.json();
-        const [ivHex, encrypted] = data.encryptedWord.split(':');
-        const iv = CryptoJS.enc.Hex.parse(ivHex);
-        const key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
-        const encryptedBase64 = CryptoJS.enc.Hex.parse(encrypted).toString(CryptoJS.enc.Base64);
-        const decrypted = CryptoJS.AES.decrypt(
-            encryptedBase64,
-            key,
-            {
-                iv: iv,
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7,
-            }
-        );
-        const decryptedWord = decrypted.toString(CryptoJS.enc.Utf8);
-        
-        if (!decryptedWord) {
-            throw new Error('Decryption failed: empty result');
-        }
-        return decryptedWord.toUpperCase();
+        return data.gameId;
     } catch (error) {
-        console.error('Decryption error:', error);
+        console.error('Error starting game:', error);
+        throw error;
+    }
+}
+
+async function submitGuess(guess: string, gameId: string, letterCount: number): Promise<{ feedback: ('green' | 'yellow' | 'red')[], isCorrect: boolean }> {
+    try {
+        const response = await fetch('/api/guess', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ guess, gameId, letterCount }),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to process guess');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error submitting guess:', error);
         throw error;
     }
 }
 
 export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore }: GameUIProps & HighscoreProps): ReactNode {
-    const [targetWord, setTargetWord] = useState<string>('');
+    const [gameId, setGameId] = useState<string>('');
     const [guesses, setGuesses] = useState<Guess[]>([]);
     const [currentGuess, setCurrentGuess] = useState('');
     const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
     const [showHighscoreForm, setShowHighscoreForm] = useState<boolean>(false);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
-
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    
     useEffect(() => {
         let timer: number;
         if (gameState === 'playing') {
@@ -96,46 +93,53 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
     }
 
     useEffect(() => {
-        const fetchWord = async () => {
+        const initGame = async () => {
             try {
-                const word = await getRandomWord(letterCount, allowRepeatingLetters);
-                setTargetWord(word);
+                const id = await startGame(letterCount, allowRepeatingLetters);
+                setGameId(id);
                 setElapsedTime(0);
             } catch (error) {
                 console.error ('Error fetching word:', error)
             }
         }
-        fetchWord();
+        initGame();
     }, [letterCount, allowRepeatingLetters]);
 
-    const handleSubmit = (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        if (gameState !== 'playing' || currentGuess.length !== letterCount) return;
+        if (gameState !== 'playing' || currentGuess.length !== letterCount || isSubmitting ) return;
 
-        const algoResult = algorithmA(currentGuess, targetWord);
-        const labels = algoResult.labelLetters(currentGuess.toUpperCase(), targetWord);
+        setIsSubmitting(true);
 
-        const feedback = labels.map((label) => {
-            if (label.includes('incorrect')) return 'red';
-            if (label.includes('correct')) return 'green';
-            if (label.includes('misplaced')) return 'yellow';
-            return 'red';
-        }) as ('green' | 'yellow' | 'red')[];
-        
-        setGuesses((prev) => [...prev, { word: currentGuess.toUpperCase(), feedback}]);
-        setCurrentGuess('');
-
-        if (currentGuess.toUpperCase() === targetWord) {
-            setGameState('won'); 
-        } else if (guesses.length +1 >= 6) {
-            setGameState('lost');
+        try {
+            const { feedback, isCorrect } = await submitGuess(currentGuess, gameId, letterCount);
+            if (isCorrect) {
+                setGameState('won');
+                setGuesses((prev) => [...prev, { word: currentGuess.toUpperCase(), feedback }]);
+            } else {
+                setGuesses((prev) => [...prev, { word: currentGuess.toUpperCase(), feedback }]);
+                if (guesses.length + 1 >= 6) {
+                    setGameState('lost');
+                } 
+            }
+            setCurrentGuess('');
+        } catch (error) {
+            console.error('Error handling guess:', error);
+        } finally {
+            setIsSubmitting(false);
         }
-
     };
 
     useEffect(() => {
+        if (gameState === 'playing' && !isSubmitting) {
+            const input = document.querySelector('.guessInput') as HTMLInputElement 
+            input?.focus()
+        }
+    }, [gameState, isSubmitting, guesses])
+
+    useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (gameState !== 'playing') return;
+            if (gameState !== 'playing' || isSubmitting) return;
             if (event.key === 'Enter') {
                 const formEvent = new Event('submit', {bubbles: true, cancelable: true });
                 document.querySelector('form')?.dispatchEvent(formEvent);
@@ -144,12 +148,12 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
        
             window.addEventListener('keydown', handleKeyPress);
             return () => window.removeEventListener('keydown', handleKeyPress);
-        }, [gameState]);
+        }, [gameState, isSubmitting]);
 
         const gameRestart = async () => {
             try {
-                const word = await getRandomWord(letterCount, allowRepeatingLetters);
-                setTargetWord(word);
+                const id = await startGame(letterCount, allowRepeatingLetters);
+                setGameId(id);
                 setGuesses([]);
                 setCurrentGuess('');
                 setGameState('playing');
@@ -197,7 +201,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
             )          
             secondMessage = (
                 <>
-                The correct word was: {targetWord}
+                The correct word was is hidden for security reasons
                 </>
             )
         }
@@ -250,10 +254,10 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                                 onChange={(s) => setCurrentGuess(s.target.value.toUpperCase().slice(0, letterCount))}
                                 placeholder={`Enter a ${letterCount}-letter word`}
                                 maxLength={letterCount}
-                                disabled={gameState !== 'playing'}
+                                disabled={gameState !== 'playing' || isSubmitting}
                                 className="guessInput"
                             />
-                            <button className="guessButton" type="submit" disabled={currentGuess.length !== letterCount}>
+                            <button className="guessButton" type="submit" disabled={currentGuess.length !== letterCount || isSubmitting}>
                                 Guess
                             </button>
                         </form>
