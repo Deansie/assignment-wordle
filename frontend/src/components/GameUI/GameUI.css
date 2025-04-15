@@ -54,19 +54,52 @@
 
 .guessInput, .guessButton {
     font-size: large;
-    margin-top: 1rem;
-   
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
 }
 
-.returnButton, .restartButton {
-    font-size: large;
+.returnButton {
     width: fit-content;
-    margin: auto;
-    
+    margin: auto;   
 }
+
+.changeDifficultyButton, .restartButton {
+    width: fit-content;
+    margin: auto;   
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
 
 .scoreSubmitButton {
-    font-size: large;
     margin-bottom: 2rem;
-    margin-top: -1rem;
+    margin-top: 0.5rem;
+}
+
+.returnButton, 
+.changeDifficultyButton, 
+.restartButton, 
+.scoreSubmitButton,
+.guessButton {
+    padding: 5px 10px;
+    transition: background-color 0.2s;
+    background-color: #ccc7c7;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 3px;
+    border: none;
+    color: #2C3639;
+}
+
+.returnButton:hover, 
+.changeDifficultyButton:hover, 
+.restartButton:hover, 
+.scoreSubmitButton:hover,
+.guessButton:hover {
+    background-color: #4C4C4C;
+    border-radius: 5px;
+    border: none;
+    color: #FFFFFF;
 }

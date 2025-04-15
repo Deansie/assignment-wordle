@@ -10,9 +10,25 @@
 }
 
 .submitButton, .cancelButton {
-    font-size: large;
-    width: fit-content;
-    margin: 1rem;
+    padding: 5px 10px;
+    transition: background-color 0.2s;
+    background-color: #ccc7c7;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 3px;
+    border: none;
+    color: #2C3639;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.submitButton:hover, .cancelButton:hover {
+    background-color: #4C4C4C;
+    border-radius: 5px;
+    border: none;
+    color: #FFFFFF;
 }
 
 .submitForm {

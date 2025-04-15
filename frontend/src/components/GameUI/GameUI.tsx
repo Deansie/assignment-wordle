@@ -67,6 +67,7 @@ async function submitGuess(guess: string, gameId: string, letterCount: number): 
     }
 }
 
+// Functio to fetch the target word from the backend when player has lost
 async function getTargetWord(gameId: string): Promise<string> {
     try {
         const response = await fetch('/api/get-target-word', {
@@ -237,7 +238,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
             )          
             secondMessage = targetWord ? (
                 <>
-                The correct word was <strong>{targetWord}</strong>
+                The correct word was: <strong>{targetWord}</strong>
                 </>
             ) : (
                 <>
@@ -285,31 +286,47 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                         ))}
                     </tbody>
                 </table>
+                <span><h2>{secondMessage}</h2></span>
+                <span>{scoreSubmit}</span>
                 <span>
                     {gameState === 'playing' ? (
-                        <form onSubmit={handleSubmit} className="guessForm">
-                            <input
-                                type="text" 
-                                value={currentGuess} 
-                                onChange={(s) => setCurrentGuess(s.target.value.toUpperCase().slice(0, letterCount))}
-                                placeholder={`Enter a ${letterCount}-letter word`}
-                                maxLength={letterCount}
-                                disabled={gameState !== 'playing' || isSubmitting}
-                                className="guessInput"
-                            />
-                            <button className="guessButton" type="submit" disabled={currentGuess.length !== letterCount || isSubmitting}>
-                                Guess
-                            </button>
-                        </form>
+                        <span>
+                            <form onSubmit={handleSubmit} className="guessForm">
+                                <span>
+                                    <input
+                                        type="text" 
+                                        value={currentGuess} 
+                                        onChange={(s) => setCurrentGuess(s.target.value.toUpperCase().slice(0, letterCount))}
+                                        placeholder={`Enter a ${letterCount}-letter word`}
+                                        maxLength={letterCount}
+                                        disabled={gameState !== 'playing' || isSubmitting}
+                                        className="guessInput"
+                                    />
+                                    <button className="guessButton" type="submit" disabled={currentGuess.length !== letterCount || isSubmitting}>
+                                        Guess
+                                    </button>
+                                </span>
+                                <div>
+                                    <button className="returnButton" onClick={onReturn}>
+                                        Return to main menu
+                                    </button>
+                                </div>
+                            </form>
+                        </span>
                     ) : (
-                        <button className="restartButton" onClick={gameRestart}>
-                            Play again
-                        </button>
+                        <span>
+                            <button className="restartButton" onClick={gameRestart}>
+                                Play again
+                            </button>
+                            <button className="changeDifficultyButton" onClick={onReturn}>
+                                Change difficulty
+                            </button>
+                        </span>
+                        
                     )}
                 </span>
-                <h2>{secondMessage}</h2>
-                <span>{scoreSubmit}</span>
-                <button className="returnButton" onClick={onReturn}>Return to main menu</button>
+                
+                
         </div>
     );
 }
