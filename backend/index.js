@@ -12,7 +12,7 @@ const client = new MongoClient(uri);
 
 const gameSessions = new Map();
 
-app.use(cors({ origin: 'https://localhost:5081' }));
+app.use(cors({ origin: 'http://localhost:5081' }));
 app.use(express.json());
 
 app.use(express.static("../frontend/dist"));
