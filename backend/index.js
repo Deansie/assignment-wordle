@@ -81,11 +81,52 @@ app.post('/api/guess', async (req, res) => {
   res.json({ feedback, isCorrect })
 })
 
-/*
-app.post("/api/highscores", (req, res) => {
 
+app.post("/api/highscores", async (req, res) => {
+  const { name, guesses, wordLength, uniqueLetter, time } = req.body;
+  
+  if (!name || typeof guesses !== 'number' || !wordLength || uniqueLetter === undefined || !time) {
+    return res.status(400).json({error: 'Missing or invalid highscore data'});
+  }
+  if (name = length > 60) {
+    return res.status(400).json({error: 'Name must be 60 characters or less'});
+  }
+  if (quesses < 1) {
+    return res.status(400).json({error: 'Guesses are needed to process the submission'})
+  }
+
+  const wordLengthNum = parseInt(wordLength);
+  if (isNaN(wordLengthNum) || ![4, 5, 6, 7, 8, 9].includes(wordLengthNum)) {
+    return res.status(400).json({error: 'Invalid word length'});
+  }
+
+  const timeMatch = time.match (/(\d+)\s*min\s*(\d+)\s*sec/);
+  if (!timeMatch) {
+    return res.status(400).json({error: 'Invalid time format'})
+  }
+
+  const timeSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
+
+  try {
+    await client.connect();
+    const db = client.db('wordleGame');
+    const result = await db.collection('highscores').insertOne({
+      name,
+      guesses,
+      wordLength: wordLengthNum,
+      uniqueLetter: uniqueLetter === 'Yes',
+      timeSeconds,
+      createdAt: new Date()
+    })
+    res.status(201).json({ message: 'Highscore submitted', id: result.insertedId});
+  } catch (error) {
+    console.error('Error submitting highscore', error);
+    res.status(500).json({error: 'Failed to submit highscore'});
+  } finally {
+    await client.close();
+  }
 })
-*/
+
 
 const getHighscoresData = () => {
   try {
