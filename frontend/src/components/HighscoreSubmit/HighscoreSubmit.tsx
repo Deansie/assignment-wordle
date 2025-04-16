@@ -10,26 +10,59 @@ interface HighscoreSubmitProps {
     onSubmit: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) => void;
     onCancel: () => void;
 }
+
+async function submitHighscore(highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) {
+    try {
+      const response = await fetch('/api/highscores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(highscoreData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit highscore');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error submitting highscore:', error);
+      throw error;
+    }
+  }
+
 export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, time, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
-
     const [playerName, setPlayerName] = useState<string>('');
+    const [error, setError] = useState<string>('');
 
-    const handleSubmit = (s: React.FormEvent) => {
+    const handleSubmit = async (s: React.FormEvent) => {
         s.preventDefault();
-        if (!playerName.trim()) {
-            alert('Please enter your name');
+        const trimmedName = playerName.trim();
+        if (!trimmedName) {
+            setError('Please enter your name');
             return;
         }
+        // Client-side XSS validation to match backend
+        if (trimmedName.match(/[<>&"']/)) {
+            setError('Name cannot contain special characters (<, >, &, ", \')');
+            return;
+        }
+
         const highscoreData = {
-            name: playerName.trim(),
+            name: trimmedName,
             guesses: guesses,
-            wordLength: `${wordLength} letters`,
+            wordLength: `${wordLength}`,
             uniqueLetter: uniqueLetter ? 'Yes' : 'No',
             time: time,
         };
-        console.log('Highscore data submitted:', highscoreData);
-        onSubmit(highscoreData);
 
+        try {
+            await submitHighscore(highscoreData);
+            setError('');
+            alert('Highscore submitted successfully!');
+            onSubmit(highscoreData);
+            setPlayerName('');
+        } catch (error: any) {
+            setError(error.message || 'Failed to submit highscore');
+        }
     };
     
     return (

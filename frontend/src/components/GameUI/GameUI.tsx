@@ -145,6 +145,16 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
         event.preventDefault();
         if (gameState !== 'playing' || currentGuess.length !== letterCount || isSubmitting ) return;
 
+        // Cheatword for testing in production env
+        if (currentGuess.toUpperCase() === "CHEAT") {
+            setGameState('won');
+            setGuesses((prev) => [...prev, { word: "CHEAT", feedback: Array(letterCount).fill('green') }]);
+            setCurrentGuess('');
+            setElapsedTime(5); 
+            setIsSubmitting(false);
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {

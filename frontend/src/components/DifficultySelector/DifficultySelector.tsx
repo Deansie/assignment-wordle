@@ -33,11 +33,12 @@ export default function DifficultySelector(): ReactNode {
         setLetterCount(prev => prev)
     }
 
+    // I want to remove this since I think its abundant, but I'm a little afraid to break something at this point
     const submitHighscore = async (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => {
         try {
             const response = await fetch ('/api/highscores', {
                 method: 'POST',
-                headers: { ' Content-type': 'application/json' },
+                headers: { 'Content-type': 'application/json' },
                 body: JSON.stringify({
                     name: highscoreData.name,
                     time: '0 min 0 sec',
