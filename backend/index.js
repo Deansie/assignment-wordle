@@ -81,7 +81,38 @@ app.post('/api/guess', async (req, res) => {
   res.json({ feedback, isCorrect })
 })
 
+async function getHighscoresData() {
+  try {
+    await client.connect();
+    const db = client.db('wordleGame');
+    const highScores = await db.collection('highscores')
+      .find()
+      .sort({guesses: 1, timeSeconds: 1})
+      .limit(10)
+      .toArray();
 
+    return highScores.map(score => ({
+      name: score.name,
+      guesses: score.guesses,
+      wordLength: `${score.wordLength} letters`,
+      uniqueLetter: score.uniqueLetter ? 'Yes' : 'No',
+      time: formatSecondsToTime(score.timeSeconds)
+    }));
+  } catch (error) {
+    console.error('Error fetching highscores:', error);
+    return [];
+  } finally {
+    await client.close();
+  }
+}
+
+function formatSecondsToTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${minutes} min ${secs} sec`;
+}
+
+// Endpoint to POST player scores to highscores db
 app.post("/api/highscores", async (req, res) => {
   const { name, guesses, wordLength, uniqueLetter, time } = req.body;
   
@@ -126,26 +157,6 @@ app.post("/api/highscores", async (req, res) => {
     await client.close();
   }
 })
-
-
-const getHighscoresData = () => {
-  try {
-    const highScores = [
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'No' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-      { name: 'Deansie', time: '5 min 04 sec', guesses: 4, wordLength: '5 letters', uniqueLetter: 'Yes' },
-    ];
-    return highScores;
-  } catch (error) {
-    console.error('Error fetching high scores:', error);
-    return [];
-  }
-};
 
 const getCssFilename = async () => {
   try {
