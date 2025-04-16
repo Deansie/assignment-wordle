@@ -3,7 +3,8 @@ import express from "express";
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
-import { algorithmA } from './algorithms.js'
+import { algorithmA } from './algorithms.js';
+import escapeHtml from 'escape-html';
 
 const app = express();
 const port = process.env.PORT || 5081;
@@ -119,11 +120,16 @@ app.post("/api/highscores", async (req, res) => {
   if (!name || typeof guesses !== 'number' || !wordLength || uniqueLetter === undefined || !time) {
     return res.status(400).json({error: 'Missing or invalid highscore data'});
   }
-  if (name = length > 60) {
+  if (name.length > 60) {
     return res.status(400).json({error: 'Name must be 60 characters or less'});
   }
-  if (quesses < 1) {
+  if (guesses < 1) {
     return res.status(400).json({error: 'Guesses are needed to process the submission'})
+  }
+
+  // XSS prevention
+  if (name.match(/[<>&"']/)) {
+    return res.status(400).json({ error: 'Name contains invalid characters' });
   }
 
   const wordLengthNum = parseInt(wordLength);
@@ -209,11 +215,11 @@ app.get('/highscores', async (req, res) => {
                         .map(
                           (score, index) => `
                           <tr key="${index}">
-                            <td>${score.name || 'N/A'}</td>
-                            <td>${score.time || 'N/A'}</td>
-                            <td>${score.guesses !== undefined ? score.guesses : 'N/A'}</td>
-                            <td>${score.wordLength || 'N/A'}</td>
-                            <td>${score.uniqueLetter || 'N/A'}</td>
+                            <td>${escapeHtml(score.name || 'N/A')}</td>
+                            <td>${escapeHtml(score.time || 'N/A')}</td>
+                            <td>${escapeHtml(score.guesses !== undefined ? score.guesses : 'N/A')}</td>
+                            <td>${escapeHtml(score.wordLength || 'N/A')}</td>
+                            <td>${escapeHtml(score.uniqueLetter || 'N/A')}</td>
                           </tr>
                         `
                         )
