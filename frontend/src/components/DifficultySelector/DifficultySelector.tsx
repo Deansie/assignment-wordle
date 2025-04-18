@@ -36,8 +36,7 @@ export default function DifficultySelector(): ReactNode {
 
     const handleHighscoreSubmit = async (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
         console.log('Highscore submitted:', highscoreData);
-        setIsGameStarted(false);
-
+        
     }
 
     const difficultyUI = (
