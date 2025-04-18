@@ -32,6 +32,7 @@ async function submitHighscore(highscoreData: { name: string; guesses: number; w
 export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, time, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
     const [playerName, setPlayerName] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const handleSubmit = async (s: React.FormEvent) => {
         s.preventDefault();
@@ -54,6 +55,7 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, tim
             time: time,
         };
 
+        setIsSubmitting(true);
         try {
             await submitHighscore(highscoreData);
             setError('');
@@ -62,6 +64,8 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, tim
             setPlayerName('');
         } catch (error: any) {
             setError(error.message || 'Failed to submit highscore');
+        } finally {
+            setIsSubmitting(false);
         }
     };
     
@@ -86,11 +90,12 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, tim
                             placeholder="Enter your name here"
                             maxLength={60}
                             required
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div className="highscoreSubmitButtonsDiv">
-                        <button type="submit" className="submitButton">Submit</button>
-                        <button type="button" className="cancelButton" onClick={onCancel}>Cancel</button>
+                        <button type="submit" className="submitButton" disabled={isSubmitting}> {isSubmitting ? 'Submitting...' : 'Submit'}</button>
+                        <button type="button" className="cancelButton" onClick={onCancel} disabled={isSubmitting}>Cancel</button>
                     </div>
                 </div>
             </form>

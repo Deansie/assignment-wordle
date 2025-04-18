@@ -9,7 +9,7 @@ export default function DifficultySelector(): ReactNode {
         letterCount: number;
         allowRepeatingLetters: boolean;
         onReturn: () => void;
-        onSubmitHighscore: (HighscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => void;
+        onSubmitHighscore: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) => void;
     }
     
     const GameStart = ({letterCount, allowRepeatingLetters, onReturn, onSubmitHighscore}: GameStartProps): ReactNode => {
@@ -33,29 +33,11 @@ export default function DifficultySelector(): ReactNode {
         setLetterCount(prev => prev)
     }
 
-    // I want to remove this since I think its abundant, but I'm a little afraid to break something at this point
-    const submitHighscore = async (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string }) => {
-        try {
-            const response = await fetch ('/api/highscores', {
-                method: 'POST',
-                headers: { 'Content-type': 'application/json' },
-                body: JSON.stringify({
-                    name: highscoreData.name,
-                    time: '0 min 0 sec',
-                    guesses: highscoreData.guesses,
-                    wordLength: highscoreData.wordLength,
-                    uniqueLetters: highscoreData.uniqueLetter,
-                }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to submit highscore');
-            }
-            console.log('Highscore submittet successfully');
-            } catch (error) {
-                 console.error('Error submitting highscore:', error);
-            }
-        }
-    
+    const handleHighscoreSubmit = async (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
+        console.log('Highscore submitted:', highscoreData);
+        setIsGameStarted(false);
+
+    }
 
     const difficultyUI = (
         
@@ -93,7 +75,7 @@ export default function DifficultySelector(): ReactNode {
         letterCount={letterCount} 
         allowRepeatingLetters={allowRepeatingLetters} 
         onReturn={returnToDifficulty}
-        onSubmitHighscore={submitHighscore}
+        onSubmitHighscore={handleHighscoreSubmit}
         /> 
     ):(
         difficultyUI
