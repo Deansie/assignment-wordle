@@ -59,9 +59,9 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, tim
         try {
             await submitHighscore(highscoreData);
             setError('');
-            alert('Highscore submitted successfully!');
             onSubmit(highscoreData);
             setPlayerName('');
+            window.location.href = '/highscores?submitted=true';
         } catch (error: any) {
             setError(error.message || 'Failed to submit highscore');
         } finally {

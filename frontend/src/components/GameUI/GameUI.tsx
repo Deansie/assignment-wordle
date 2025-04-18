@@ -220,7 +220,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
         } 
 
         const handleSubmitHighscore = (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
-            onSubmitHighscore( {...highscoreData, time: formatTime(elapsedTime)});
+            onSubmitHighscore( {...highscoreData});
             setShowHighscoreForm(false);
         }
 

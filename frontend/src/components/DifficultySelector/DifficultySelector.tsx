@@ -2,6 +2,7 @@ import { useState } from "react";
 import GameUI from "../GameUI/GameUI";
 import { ReactNode } from 'react';
 import './DifficultySelector.css';
+import { useNavigate } from "react-router-dom";
 
 export default function DifficultySelector(): ReactNode {
 

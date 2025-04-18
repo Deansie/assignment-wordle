@@ -192,12 +192,17 @@ app.get('/highscores', async (req, res) => {
     console.log('safeHighscoresData:', safeHighscoresData);
 
     const cssFilename = await getCssFilename();
+    const showSubmissionMessage = req.query.submitted === 'true';
+    const submissionMessage = showSubmissionMessage ? 'Your score has been added to the scoreboard!' : '';
+  
 
     const highscoresHtml = `
       <main>
         <div class="mainDivHighScores">
+          <h2>${submissionMessage}</h2>
           <h2>Highest scores</h2>
           <div>
+          
             <table>
               <thead>
                 <tr>
@@ -233,6 +238,7 @@ app.get('/highscores', async (req, res) => {
               </tbody>
             </table>
           </div>
+          
         </div>
       </main>
     `;

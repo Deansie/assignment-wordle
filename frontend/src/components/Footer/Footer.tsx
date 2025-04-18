@@ -18,7 +18,7 @@ export default function Footer(): ReactNode {
                         <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
                         React
                         </a>{' '}
-                        | Version 0.8.0 | Last Updated: April 14, 2025
+                        | Version 0.8.7 | Last Updated: April 14, 2025
                     </p>
                     <p>
                         We’d love your feedback!{' '}
