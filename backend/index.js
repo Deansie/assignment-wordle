@@ -85,6 +85,7 @@ app.post('/api/guess', async (req, res) => {
 async function getHighscoresData() {
   try {
     await client.connect();
+    console.log('Connectod to MongoDB:', uri)
     const db = client.db('wordleGame');
     const highScores = await db.collection('highscores')
       .find()
@@ -308,9 +309,9 @@ app.get('/highscores', async (req, res) => {
   }
 });
 
-app.get('/api/highscores', (req, res) => {
+app.get('/api/highscores', async (req, res) => {
   try {
-    const highScores = getHighscoresData();
+    const highScores = await getHighscoresData();
     res.json(highScores);
   } catch (error) {
     console.error('Error fetching high scores:', error);

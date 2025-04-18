@@ -3,10 +3,10 @@ import { ReactNode, useEffect, useState } from 'react';
 
 interface HighScore {
     name: string;
-    time: string;
     guesses: number;
     wordLength: string;
     uniqueLetter: string;
+    time: string;    
 }
 
 export default function Highscores(): ReactNode {
