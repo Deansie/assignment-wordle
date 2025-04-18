@@ -11,6 +11,60 @@
 
     }
 
-div {
-    text-align: center;
+
+
+.articleDivs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    max-width: 80%;
+
+    hr {
+        width: 80%;
+        height: 1px;
+        background-color: #2C3639;
+        color: #2C3639;
+        border-width: 0;
+    }
+
+    h3 {
+        text-align: center;
+    }
 }
+
+section {
+    width: fit-content;
+    text-align: left;
+    gap: 2rem;
+    margin: 1rem;
+}
+
+.techStackDiv {
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    margin-left: 4.5rem;
+    
+    h2 {
+        margin-bottom: 0.5rem;
+    }
+
+    h3 {
+        text-align: left;
+        margin-bottom: 0.4rem;
+        margin-top: 0.5rem;
+    }    
+        
+
+    li {
+        width: fit-content;
+        text-align: left;
+    }
+}
+
+
+
+
+
