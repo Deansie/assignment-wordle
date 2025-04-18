@@ -184,7 +184,7 @@ const getCssFilename = async () => {
 app.get('/highscores', async (req, res) => {
   try {
   
-    const highscoresData = getHighscoresData();
+    const highscoresData = await getHighscoresData();
 
     const safeHighscoresData = Array.isArray(highscoresData)
       ? highscoresData.filter(item => item && typeof item === 'object' && 'name' in item)
