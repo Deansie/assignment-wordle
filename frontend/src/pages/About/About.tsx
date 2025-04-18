@@ -98,6 +98,9 @@ export default function About(): ReactNode {
                                     <li>
                                     <strong>Flowchart:</strong>  <a href='https://www.figma.com/board/N97HCWe22IE2uKNxoexWfe/Assignment---Wordle-game?node-id=0-1&p=f&t=OwtfKA1q7Nk1FkZ9-0'>Application architecture</a> diagram
                                     </li>
+                                    <li>
+                                    <strong>Datasources:</strong> <a href='https://github.com/dwyl/english-words/blob/master/words_dictionary.json'>Wordlist</a> from English-Words
+                                    </li>
                                 </ul>
                          </div>
                     </div>
