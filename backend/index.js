@@ -8,12 +8,12 @@ import escapeHtml from 'escape-html';
 
 const app = express();
 const port = process.env.PORT || 5081;
-const uri = 'mongodb://192.168.0.82:27017';
+const uri = 'mongodb://192.168.0.82:27017/wordleGame';
 const client = new MongoClient(uri);
 
 const gameSessions = new Map();
 
-app.use(cors({ origin: 'https://deansie-wordle.ekedala-services.se' }));
+app.use(cors({ origin: ['https://deansie-wordle.ekedala-services.se', 'http://deansie-wordle.ekedala-services.se', 'http://localhost:8080'] }));
 app.use(express.json());
 
 app.use(express.static("../frontend/dist"));
