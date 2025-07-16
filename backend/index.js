@@ -8,7 +8,7 @@ import escapeHtml from 'escape-html';
 
 const app = express();
 const port = process.env.PORT || 5081;
-const uri = 'mongodb://192.168.0.82:27017/wordleGame';
+const uri = 'mongodb://192.168.0.82:27017';
 const client = new MongoClient(uri);
 
 const gameSessions = new Map();
