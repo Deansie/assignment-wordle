@@ -13,7 +13,7 @@ const client = new MongoClient(uri);
 
 const gameSessions = new Map();
 
-app.use(cors({ origin: 'http://deansie-wordle.ekedala-services.se' }));
+app.use(cors({ origin: 'https://deansie-wordle.ekedala-services.se' }));
 app.use(express.json());
 
 app.use(express.static("../frontend/dist"));
