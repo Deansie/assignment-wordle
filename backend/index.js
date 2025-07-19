@@ -18,7 +18,7 @@ const client = new MongoClient(uri, {
   connectTimeoutMS: 10000         
 });
 
-(async () => {
+async function ensureMongoConnection() {
   try {
     await client.connect();
     console.log('Connected to MongoDB:', uri);
@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
     console.error('Failed to connect to MongoDB:', error);
     process.exit(1);
   }
-})();
+}
 
 const gameSessions = new Map();
 
@@ -37,7 +37,6 @@ app.use(express.static("../frontend/dist"));
 
 async function getRandomWord(length, allowRepeatingLetters) {
   try {
-    await client.connect();
     const db = client.db('wordleGame');
     const doc = await db.collection('wordLists').findOne({ length });
     if (!doc?.words?.length) throw new Error(`No ${length}-letter words found`);
@@ -115,7 +114,6 @@ app.post('/api/guess', async (req, res) => {
 
 async function getHighscoresData() {
   try {
-    await client.connect();
     console.log('Connectod to MongoDB:', uri)
     const db = client.db('wordleGame');
     const highScores = await db.collection('highscores')
@@ -175,7 +173,6 @@ app.post("/api/highscores", async (req, res) => {
   const timeSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
 
   try {
-    await client.connect();
     const db = client.db('wordleGame');
     const result = await db.collection('highscores').insertOne({
       name,
@@ -384,6 +381,9 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-app.listen(5081, serverStart);
-
-
+ensureMongoConnection().then(() => {
+  app.listen(5081, serverStart);
+}).catch(err => {
+  console.error('Server failed to start due to MongoDB connection error:', err);
+  process.exit(1);
+});
