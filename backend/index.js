@@ -8,8 +8,24 @@ import escapeHtml from 'escape-html';
 
 const app = express();
 const port = process.env.PORT || 5081;
-const uri = 'mongodb://mongodb:27017';
-const client = new MongoClient(uri);
+const uri = 'mongodb://mongodb-service:27017';
+const client = new MongoClient(uri, {
+  serverSelectionTimeoutMS: 5000, 
+  heartbeatFrequencyMS: 10000,            
+  maxPoolSize: 10,                
+  minPoolSize: 2,                 
+  connectTimeoutMS: 10000         
+});
+
+async function ensureMongoConnection() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB:', uri);
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error);
+    process.exit(1);
+  }
+}
 
 const gameSessions = new Map();
 
@@ -20,7 +36,6 @@ app.use(express.static("../frontend/dist"));
 
 async function getRandomWord(length, allowRepeatingLetters) {
   try {
-    await client.connect();
     const db = client.db('wordleGame');
     const doc = await db.collection('wordLists').findOne({ length });
     if (!doc?.words?.length) throw new Error(`No ${length}-letter words found`);
@@ -32,8 +47,8 @@ async function getRandomWord(length, allowRepeatingLetters) {
     if (!words.length) throw new Error(`Ǹo ${length}-letter words without repeating letters found`);
     
       return words[Math.floor(Math.random() * words.length)];
-  } finally {
-    await client.close();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -46,6 +61,14 @@ app.post('/api/start-game', async (req, res) => {
   try {
     const word = await getRandomWord(lengthNum, allowRepeatingLetters === 'true');
     const gameId = uuidv4();
+    const db = client.db('wordleGame');
+    await db.collection('gameSessions').insertOne({
+      gameId,
+      word: word.toUpperCase(),
+      letterCount: lengthNum,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+    });
     gameSessions.set(gameId, {word: word.toUpperCase(), letterCount: lengthNum });
     res.json({ gameId })
   } catch (error) {
@@ -62,9 +85,11 @@ app.post('/api/guess', async (req, res) => {
     return res.status(400).json ({error: `Guess must be ${letterCount} letters`})
   } 
 
-  const session = gameSessions.get(gameId);
+  const db = client.db('wordleGame');
+  const session = await db.collection('gameSessions').findOne({ gameId, expiresAt: { $gt: new Date() } });
   if (!session) {
-    return res.status(400).json ({error: 'Game session not found'})
+    gameSessions.delete(gameId); 
+    return res.status(400).json({ error: 'Game session not found or expired' });
   }
 
   const targetWord = session.word;
@@ -79,12 +104,15 @@ app.post('/api/guess', async (req, res) => {
   });
 
   const isCorrect = guess.toUpperCase() === targetWord;
+  if (isCorrect) {
+    await db.collection('gameSessions').deleteOne({ gameId });
+    gameSessions.delete(gameId);
+  }
   res.json({ feedback, isCorrect })
 })
 
 async function getHighscoresData() {
   try {
-    await client.connect();
     console.log('Connectod to MongoDB:', uri)
     const db = client.db('wordleGame');
     const highScores = await db.collection('highscores')
@@ -103,8 +131,6 @@ async function getHighscoresData() {
   } catch (error) {
     console.error('Error fetching highscores:', error);
     return [];
-  } finally {
-    await client.close();
   }
 }
 
@@ -146,7 +172,6 @@ app.post("/api/highscores", async (req, res) => {
   const timeSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
 
   try {
-    await client.connect();
     const db = client.db('wordleGame');
     const result = await db.collection('highscores').insertOne({
       name,
@@ -160,8 +185,6 @@ app.post("/api/highscores", async (req, res) => {
   } catch (error) {
     console.error('Error submitting highscore', error);
     res.status(500).json({error: 'Failed to submit highscore'});
-  } finally {
-    await client.close();
   }
 })
 
@@ -320,18 +343,21 @@ app.get('/api/highscores', async (req, res) => {
 });
 
 // Endpoint to reveal the target word in the current session when the player has lost
-app.post('/api/get-target-word', (req, res) => {
+app.post('/api/get-target-word', async (req, res) => {
   const {gameId} = req.body;
   if (!gameId) {
     return res.status(400).json({ error: 'Missing game ID'});
   }
 
-  const session = gameSessions.get(gameId);
+  const db = client.db('wordleGame');
+  const session = await db.collection('gameSessions').findOne({ gameId, expiresAt: { $gt: new Date() } });
   if (!session) {
-    return res.status(400).json({ error: 'Game session not found'});
+    gameSessions.delete(gameId); 
+    return res.status(400).json({ error: 'Game session not found or expired' });
   }
 
   const targetWord = session.word;
+  await db.collection('gameSessions').deleteOne({ gameId }); 
   gameSessions.delete(gameId);
   res.json({targetWord});
 })
@@ -349,6 +375,14 @@ const serverStart= () => {
     console.log("Server running on port", 5081)
 }
 
-app.listen(5081, serverStart);
+process.on('SIGTERM', async () => {
+  await client.close();
+  process.exit(0);
+});
 
-
+ensureMongoConnection().then(() => {
+  app.listen(5081, serverStart);
+}).catch(err => {
+  console.error('Server failed to start due to MongoDB connection error:', err);
+  process.exit(1);
+});
