@@ -9,7 +9,24 @@ import escapeHtml from 'escape-html';
 const app = express();
 const port = process.env.PORT || 5081;
 const uri = 'mongodb://mongodb:27017';
-const client = new MongoClient(uri);
+const client = new MongoClient(uri, {
+  serverSelectionTimeoutMS: 5000, 
+  heartbeatFrequencyMS: 10000,    
+  autoReconnect: true,            
+  maxPoolSize: 10,                
+  minPoolSize: 2,                 
+  connectTimeoutMS: 10000         
+});
+
+(async () => {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB:', uri);
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error);
+    process.exit(1);
+  }
+})();
 
 const gameSessions = new Map();
 
@@ -32,8 +49,8 @@ async function getRandomWord(length, allowRepeatingLetters) {
     if (!words.length) throw new Error(`Ǹo ${length}-letter words without repeating letters found`);
     
       return words[Math.floor(Math.random() * words.length)];
-  } finally {
-    await client.close();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -103,8 +120,6 @@ async function getHighscoresData() {
   } catch (error) {
     console.error('Error fetching highscores:', error);
     return [];
-  } finally {
-    await client.close();
   }
 }
 
@@ -160,8 +175,6 @@ app.post("/api/highscores", async (req, res) => {
   } catch (error) {
     console.error('Error submitting highscore', error);
     res.status(500).json({error: 'Failed to submit highscore'});
-  } finally {
-    await client.close();
   }
 })
 
