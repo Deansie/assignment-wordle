@@ -11,8 +11,7 @@ const port = process.env.PORT || 5081;
 const uri = 'mongodb://mongodb-service:27017';
 const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 5000, 
-  heartbeatFrequencyMS: 10000,    
-  autoReconnect: true,            
+  heartbeatFrequencyMS: 10000,            
   maxPoolSize: 10,                
   minPoolSize: 2,                 
   connectTimeoutMS: 10000         
