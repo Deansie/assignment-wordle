@@ -63,6 +63,14 @@ app.post('/api/start-game', async (req, res) => {
   try {
     const word = await getRandomWord(lengthNum, allowRepeatingLetters === 'true');
     const gameId = uuidv4();
+    const db = client.db('wordleGame');
+    await db.collection('gameSessions').insertOne({
+      gameId,
+      word: word.toUpperCase(),
+      letterCount: lengthNum,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+    });
     gameSessions.set(gameId, {word: word.toUpperCase(), letterCount: lengthNum });
     res.json({ gameId })
   } catch (error) {
@@ -79,9 +87,11 @@ app.post('/api/guess', async (req, res) => {
     return res.status(400).json ({error: `Guess must be ${letterCount} letters`})
   } 
 
-  const session = gameSessions.get(gameId);
+  const db = client.db('wordleGame');
+  const session = await db.collection('gameSessions').findOne({ gameId, expiresAt: { $gt: new Date() } });
   if (!session) {
-    return res.status(400).json ({error: 'Game session not found'})
+    gameSessions.delete(gameId); 
+    return res.status(400).json({ error: 'Game session not found or expired' });
   }
 
   const targetWord = session.word;
@@ -96,6 +106,10 @@ app.post('/api/guess', async (req, res) => {
   });
 
   const isCorrect = guess.toUpperCase() === targetWord;
+  if (isCorrect) {
+    await db.collection('gameSessions').deleteOne({ gameId });
+    gameSessions.delete(gameId);
+  }
   res.json({ feedback, isCorrect })
 })
 
@@ -333,18 +347,21 @@ app.get('/api/highscores', async (req, res) => {
 });
 
 // Endpoint to reveal the target word in the current session when the player has lost
-app.post('/api/get-target-word', (req, res) => {
+app.post('/api/get-target-word', async (req, res) => {
   const {gameId} = req.body;
   if (!gameId) {
     return res.status(400).json({ error: 'Missing game ID'});
   }
 
-  const session = gameSessions.get(gameId);
+  const db = client.db('wordleGame');
+  const session = await db.collection('gameSessions').findOne({ gameId, expiresAt: { $gt: new Date() } });
   if (!session) {
-    return res.status(400).json({ error: 'Game session not found'});
+    gameSessions.delete(gameId); 
+    return res.status(400).json({ error: 'Game session not found or expired' });
   }
 
   const targetWord = session.word;
+  await db.collection('gameSessions').deleteOne({ gameId }); 
   gameSessions.delete(gameId);
   res.json({targetWord});
 })
@@ -361,6 +378,11 @@ app.get("*", async (req, res) => {
 const serverStart= () => {
     console.log("Server running on port", 5081)
 }
+
+process.on('SIGTERM', async () => {
+  await client.close();
+  process.exit(0);
+});
 
 app.listen(5081, serverStart);
 
