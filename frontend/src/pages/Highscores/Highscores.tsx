@@ -35,7 +35,7 @@ export default function Highscores(): ReactNode {
                                 {highScores.length > 0 ? (
                                     highScores.map((score, index) => (
                                     <tr key={index}>
-                                            <td><h3>{score.name}</h3>
+                                            <td><h3>{index + 1}: {score.name}</h3>
                                                 <p>
                                                     <i><b>Time: </b>{score.time} | <b>Guesses: </b>{score.guesses}
                                                     <br />
