@@ -39,7 +39,7 @@ export default function DifficultySelector(): ReactNode {
         
     }
 
-    const isSmallScreen = window.matchMedia('(max-width: 600px)').matches;
+    const isSmallScreen = window.matchMedia('(max-width: 444px)').matches;
     const letterOptions = isSmallScreen ? [4, 5, 6, 7] : [4, 5, 6, 7, 8, 9];
 
     const difficultyUI = (
