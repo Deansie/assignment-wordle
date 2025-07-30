@@ -236,7 +236,7 @@ app.get('/highscores', async (req, res) => {
                         (score, index) => `
                         <tr key="${index}">
                           <td>
-                            <h3>${escapeHtml(score.name || 'N/A')}</h3>
+                            <h3>${index + 1} ${escapeHtml(score.name || 'N/A')}</h3>
                             <p>
                               <i><b>Time: </b>${escapeHtml(score.time || 'N/A')} | <b>Guesses: </b>${escapeHtml(score.guesses !== undefined ? score.guesses : 'N/A')}
                               <br />
