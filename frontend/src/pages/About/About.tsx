@@ -17,8 +17,8 @@ export default function About(): ReactNode {
                         <section>
                             The frontend, crafted with React and TypeScript, delivers a responsive, dynamic user interface. 
                             The backend, powered by Node.js, Express, and a self-hosted MongoDB, manages game logic, high score persistence, 
-                            and secure data. Hosted on self-managed Debian servers with Nginx, Cloudflare SSL, and Jenkins for CI/CD, 
-                            this project showcases a robust MERN-like stack, ensuring a seamless and secure gaming experience.
+                            and secure data. Hosted on self-managed High-Availabe Kubernetes Cluster with Nginx for reverse proxying, Cloudflare SSL, Jenkins for CI/CD, 
+                            Prometheus and Grafana for monitoring. This project showcases a robust MERN-like stack, ensuring a seamless and secure gaming experience.
                         </section>
                         
                     </div>
@@ -45,13 +45,13 @@ export default function About(): ReactNode {
                              <ul>
                                 <h3>Backend</h3>
                                     <li>
-                                    <strong>Node.js:</strong>  JavaScript runtime for server logic
+                                    <strong>Node.js:</strong>  Containerized in Docker
                                     </li>
                                     <li>
-                                    <strong>Express:</strong>  Web framework for APIs and server-side rendering, managed by PM2
+                                    <strong>Express:</strong>  Runs in Docker containers, managed by Kubernetes
                                     </li>
                                     <li>
-                                    <strong>MongoDB:</strong>  Self-hosted NoSQL database for high scores and word list
+                                    <strong>MongoDB:</strong>  Self-hosted as Deployment in Kubernetes with persistent storage
                                     </li>
                                 </ul>
                          </div>
@@ -73,19 +73,22 @@ export default function About(): ReactNode {
                              <ul>
                                 <h3>Infrastructure</h3>
                                     <li>
-                                    <strong>Debian 12:</strong>  Operating system hosting self-managed servers
+                                    <strong>Proxmox VE:</strong>  Hosts Kubernetes nodes as virtual machines
                                     </li>
                                     <li>
-                                    <strong>Nginx:</strong>  Reverse proxy foor routing requests and DNS management
+                                    <strong>HA Kubernetes:</strong>  Orchestrates backend and frontend containers
                                     </li>
                                     <li>
-                                        <strong>Cloudflare SSL:</strong>  Provides HTTPS encryption and security
+                                    <strong>Nginx:</strong>  Reverse proxy for routing requests and DNS management
                                     </li>
                                     <li>
-                                        <strong>Jenkins:</strong>  CI/CD tool for automated build, test and deployment
+                                    <strong>Cloudflare SSL:</strong>  Provides HTTPS encryption and security
                                     </li>
                                     <li>
-                                        <strong>PM2:</strong>  Process manager for running Express.js on Debian servers
+                                    <strong>Jenkins:</strong>  CI/CD deploys to Kubernetes via Docker images and manifests
+                                    </li>
+                                    <li>
+                                    <strong>Prometheus and Grafana:</strong>  Monitoring for Kubernetes cluster and application metrics
                                     </li>
                                 </ul>
                          </div>
