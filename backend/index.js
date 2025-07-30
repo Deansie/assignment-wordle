@@ -224,41 +224,39 @@ app.get('/highscores', async (req, res) => {
       <main>
         <div class="mainDivHighScores">
           <h2>${submissionMessage}</h2>
-          <h2>Highest scores</h2>
+          <h2>Leaderboard</h2>
           <div>
           
             <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Time</th>
-                  <th>Guesses</th>
-                  <th>Wordlength</th>
-                  <th>Unique letter</th>
-                </tr>
-              </thead>
               <tbody>
-                ${
-                  safeHighscoresData.length > 0
-                    ? safeHighscoresData
-                        .map(
-                          (score, index) => `
-                          <tr key="${index}">
-                            <td>${escapeHtml(score.name || 'N/A')}</td>
-                            <td>${escapeHtml(score.time || 'N/A')}</td>
-                            <td>${escapeHtml(score.guesses !== undefined ? score.guesses : 'N/A')}</td>
-                            <td>${escapeHtml(score.wordLength || 'N/A')}</td>
-                            <td>${escapeHtml(score.uniqueLetter || 'N/A')}</td>
-                          </tr>
-                        `
-                        )
-                        .join('')
-                    : `
-                      <tr>
-                        <td colspan="5">No high scores available</td>
-                      </tr>
-                    `
-                }
+              ${
+                safeHighscoresData.length > 0
+                  ? safeHighscoresData
+                      .map(
+                        (score, index) => `
+                        <tr key="${index}">
+                          <td>
+                            <h3>${index + 1} ${escapeHtml(score.name || 'N/A')}</h3>
+                            <p>
+                              <i><b>Time: </b>${escapeHtml(score.time || 'N/A')} | <b>Guesses: </b>${escapeHtml(score.guesses !== undefined ? score.guesses : 'N/A')}
+                              <br />
+                              </i>
+                            </p>
+                            <p>
+                              <i><b>Length: </b>${escapeHtml(score.wordLength || 'N/A')} | <b>Unique letters: </b>${escapeHtml(score.uniqueLetter || 'N/A')}
+                              </i>
+                            </p>
+                          </td>
+                        </tr>
+                      `
+                      )
+                      .join('')
+                  : `
+                    <tr>
+                      <td colspan="5">No high scores available</td>
+                    </tr>
+                  `
+              }
               </tbody>
             </table>
           </div>

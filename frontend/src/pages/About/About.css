@@ -1,70 +1,140 @@
-.mainDivAbout {
-    
-    max-width: 800px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto;
-    padding: 10px;
-    background-color: #ffffff;
-    margin-top: -1rem;
+@media (min-width: 600px) {
 
-    }
-
-
-
-.articleDivs {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto;
-    max-width: 80%;
-
-    hr {
-        width: 80%;
-        height: 1px;
-        background-color: #2C3639;
-        color: #2C3639;
-        border-width: 0;
-    }
-
-    h3 {
-        text-align: center;
-    }
-}
-
-section {
-    width: fit-content;
-    text-align: left;
-    gap: 2rem;
-    margin: 1rem;
-}
-
-.techStackDiv {
-    max-width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    margin-left: 4.5rem;
-    
-    h2 {
-        margin-bottom: 0.5rem;
-    }
-
-    h3 {
-        text-align: left;
-        margin-bottom: 0.4rem;
-        margin-top: 0.5rem;
-    }    
+    .mainDivAbout {
         
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto;
+        padding: 3px;
+        background-color: #ffffff;
+        margin-top: -1rem;
 
-    li {
+        }
+
+
+
+    .articleDivs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto;
+        max-width: 90%;
+
+        hr {
+            width: 80%;
+            height: 1px;
+            background-color: #2C3639;
+            color: #2C3639;
+            border-width: 0;
+        }
+
+        h3 {
+            text-align: center;
+        }
+    }
+
+    section {
         width: fit-content;
         text-align: left;
+        gap: 2rem;
+        margin: 1rem;
+    }
+
+    .techStackDiv {
+        max-width: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        margin-left: 2.5rem;
+        
+        h2 {
+            margin-bottom: 0.5rem;
+            margin-left: 2rem;
+        }
+
+        h3 {
+            text-align: left;
+            margin-bottom: 0.4rem;
+            margin-top: 0.5rem;
+        }    
+            
+
+        li {
+            width: fit-content;
+            text-align: left;
+        }
     }
 }
 
+@media (max-width: 599px) {
 
+    .mainDivAbout {
+        
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto;
+        padding: 10px;
+        background-color: #ffffff;
+        margin-top: -1rem;
 
+        }
+
+    .articleDivs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto;
+        max-width: 92%;
+
+        hr {
+            width: 80%;
+            height: 1px;
+            background-color: #2C3639;
+            color: #2C3639;
+            border-width: 0;
+        }
+
+        h3 {
+            text-align: center;
+        }
+    }
+
+    section {
+        width: fit-content;
+        text-align: left;
+        gap: 2rem;
+        margin: 1rem;
+    }
+
+    .techStackDiv {
+        max-width: 92%;
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        margin-left: 0rem;
+        
+        h2 {
+            margin-bottom: 0.5rem;
+            margin-left: 2rem;
+        }
+
+        h3 {
+            text-align: left;
+            margin-bottom: 0.4rem;
+            margin-top: 0.5rem;
+        }    
+            
+
+        li {
+            width: fit-content;
+            text-align: left;
+        }
+    }
+
+}
 
 

@@ -28,27 +28,25 @@ export default function Highscores(): ReactNode {
         return (
             <main>
                 <div className="mainDivHighScores">
-                    <h2>Highest scores</h2>
+                    <h2>Leaderboard</h2>
                     <div>
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Time</th>
-                                    <th>Guesses</th>
-                                    <th>Wordlength</th>
-                                    <th>Unique letter</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 {highScores.length > 0 ? (
                                     highScores.map((score, index) => (
                                     <tr key={index}>
-                                        <td>{score.name}</td>
-                                        <td>{score.time}</td>
-                                        <td>{score.guesses}</td>
-                                        <td>{score.wordLength}</td>
-                                        <td>{score.uniqueLetter}</td>
+                                            <td><h3>{index + 1}: {score.name}</h3>
+                                                <p>
+                                                    <i><b>Time: </b>{score.time} | <b>Guesses: </b>{score.guesses}
+                                                    <br />
+                                                    </i>
+                                                </p>
+                                                <p> 
+                                                    <i><b>Length: </b>{score.wordLength} | <b>Unique letters:</b> {score.uniqueLetter}
+                                                    </i>
+                                                </p>
+                                                
+                                            </td>
                                     </tr>
                                     ))
                                 ) : (

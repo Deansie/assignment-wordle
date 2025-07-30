@@ -185,6 +185,23 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
     }, [gameState, isSubmitting, guesses])
 
     useEffect(() => {
+           const input = document.querySelector('.guessInput') as HTMLInputElement;
+           const board = document.querySelector('.gameBoard') as HTMLTableElement;
+    
+           const handleInputFocus = () => {
+               if (board) {
+                   board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+               }
+           };
+    
+           input?.addEventListener('focus', handleInputFocus);
+    
+           return () => {
+               input?.removeEventListener('focus', handleInputFocus);
+           };
+       }, []);
+
+    useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (gameState !== 'playing' || isSubmitting) return;
             if (event.key === 'Enter') {
@@ -300,7 +317,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
                 <span>
                     {gameState === 'playing' ? (
                         <span>
-                            <form onSubmit={handleSubmit} className="guessForm">
+                            <form onSubmit={handleSubmit} className="guessForm" aria-label="Game board">
                                 <span>
                                     <input
                                         type="text" 

@@ -39,21 +39,29 @@ export default function DifficultySelector(): ReactNode {
         
     }
 
+    const isSmallScreen = window.matchMedia('(max-width: 444px)').matches;
+    const letterOptions = isSmallScreen ? [4, 5, 6, 7] : [4, 5, 6, 7, 8, 9];
+
     const difficultyUI = (
         
     <div className='difficultyDiv'>
         <h2>Select difficulty</h2>
         <span>
             <label>Number of letters:</label>
-                <select aria-label='Number of letters' className='selectLetters'
-                value={letterCount.toString()} onChange={(s) => setLetterCount(parseInt(s.target.value))}>
-                    
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
+                <select 
+                    aria-label='Number of letters' 
+                    className='selectLetters'
+                    value={letterCount.toString()}
+                    onChange={(s) => {
+                       const newValue = parseInt(s.target.value);
+                       setLetterCount(isSmallScreen && newValue > 7 ? 7 : newValue);
+                    }}
+                >
+                    {letterOptions.map((num) => (
+                       <option key={num} value={num}>
+                           {num}
+                      </option>
+                    ))}
                 </select>
         </span>
         <span>

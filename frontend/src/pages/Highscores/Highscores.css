@@ -11,12 +11,16 @@ table {
     text-align: center;
     padding: 2px;
     padding-bottom: 1rem;
+
+    p {
+      color: slategray;
+    }
     
   }
   
 .mainDivHighScores {
     
-    max-width: 800px;
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     justify-content: center;
