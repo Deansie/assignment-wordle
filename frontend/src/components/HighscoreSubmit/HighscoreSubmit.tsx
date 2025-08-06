@@ -3,15 +3,16 @@ import { ReactNode } from 'react';
 import './HighscoreSubmit.css';
 
 interface HighscoreSubmitProps {
+    gameId: string;
     guesses: number;
     wordLength: number;
     uniqueLetter: boolean;
     time: string;
-    onSubmit: (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) => void;
+    onSubmit: (highscoreData: { name: string; gameId: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) => void;
     onCancel: () => void;
 }
 
-async function submitHighscore(highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string }) {
+async function submitHighscore(highscoreData: { name: string; gameId: string;}) {
     try {
       const response = await fetch('/api/highscores', {
         method: 'POST',
@@ -29,7 +30,7 @@ async function submitHighscore(highscoreData: { name: string; guesses: number; w
     }
   }
 
-export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, time, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
+export default function HighscoreSubmit({ gameId, guesses, wordLength, uniqueLetter, time, onSubmit, onCancel }: HighscoreSubmitProps): ReactNode {
     const [playerName, setPlayerName] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -49,10 +50,11 @@ export default function HighscoreSubmit({ guesses, wordLength, uniqueLetter, tim
 
         const highscoreData = {
             name: trimmedName,
-            guesses: guesses,
+            gameId,
+            guesses,
             wordLength: `${wordLength}`,
             uniqueLetter: uniqueLetter ? 'Yes' : 'No',
-            time: time,
+            time
         };
 
         setIsSubmitting(true);
