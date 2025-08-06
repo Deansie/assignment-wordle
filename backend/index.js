@@ -66,8 +66,11 @@ app.post('/api/start-game', async (req, res) => {
       gameId,
       word: word.toUpperCase(),
       letterCount: lengthNum,
+      allowRepeats: allowRepeatingLetters === 'true',
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      guesses: [],
+      endedAt: null
     });
     gameSessions.set(gameId, {word: word.toUpperCase(), letterCount: lengthNum });
     res.json({ gameId })
@@ -105,8 +108,18 @@ app.post('/api/guess', async (req, res) => {
 
   const isCorrect = guess.toUpperCase() === targetWord;
   if (isCorrect) {
-    await db.collection('gameSessions').deleteOne({ gameId });
-    gameSessions.delete(gameId);
+    await db.collection('gameSessions').updateOne(
+      { gameId },
+      {
+        $push: { guesses: guess.toUpperCase() },
+        $set: { endedAt: new Date() }
+      }
+    );
+  } else {
+    await db.collection('gameSessions').updateOne(
+      { gameId },
+      { $push: { guesses: guess.toUpperCase() } }
+    );
   }
   res.json({ feedback, isCorrect })
 })
@@ -142,16 +155,13 @@ function formatSecondsToTime(seconds) {
 
 // Endpoint to POST player scores to highscores db
 app.post("/api/highscores", async (req, res) => {
-  const { name, guesses, wordLength, uniqueLetter, time } = req.body;
+  const { name, gameId } = req.body;
   
-  if (!name || typeof guesses !== 'number' || !wordLength || uniqueLetter === undefined || !time) {
+  if (!name || !gameId) {
     return res.status(400).json({error: 'Missing or invalid highscore data'});
   }
   if (name.length > 60) {
     return res.status(400).json({error: 'Name must be 60 characters or less'});
-  }
-  if (guesses < 1) {
-    return res.status(400).json({error: 'Guesses are needed to process the submission'})
   }
 
   // XSS prevention
@@ -159,28 +169,29 @@ app.post("/api/highscores", async (req, res) => {
     return res.status(400).json({ error: 'Name contains invalid characters' });
   }
 
-  const wordLengthNum = parseInt(wordLength);
-  if (isNaN(wordLengthNum) || ![4, 5, 6, 7, 8, 9].includes(wordLengthNum)) {
-    return res.status(400).json({error: 'Invalid word length'});
+  const db = client.db("wordleGame");
+  const session = await db.collection("gameSessions").findOne({gameId});
+
+  if (!session) {
+    return res.status(400).json({ error: "Game session not found or has expired" });
   }
 
-  const timeMatch = time.match (/(\d+)\s*min\s*(\d+)\s*sec/);
-  if (!timeMatch) {
-    return res.status(400).json({error: 'Invalid time format'})
+  if (!session.guesses || session.guesses.length === 0 || !session.endedAt) {
+    return res.status(400).json({ error: "Game did not complete properly" })
   }
 
-  const timeSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
+  const timeSeconds = Math.floor((new Date(session.endedAt) - new Date(session.createdAt)) / 1000);
 
   try {
-    const db = client.db('wordleGame');
-    const result = await db.collection('highscores').insertOne({
+    const result = await db.collection("highscores").insertOne({
       name,
-      guesses,
-      wordLength: wordLengthNum,
-      uniqueLetter: uniqueLetter === 'Yes',
+      guesses: session.guesses.length,
+      wordLength: session.letterCount,
+      uniqueLetter: session.allowRepeats === false, // assuming you store this
       timeSeconds,
+      gameId,
       createdAt: new Date()
-    })
+    });
     res.status(201).json({ message: 'Highscore submitted', id: result.insertedId});
   } catch (error) {
     console.error('Error submitting highscore', error);
