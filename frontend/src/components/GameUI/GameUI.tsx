@@ -23,6 +23,7 @@ interface HighscoreProps {
     onSubmitHighscore: (
         highscoreData: { 
             name: string; 
+            gameId: string;
             guesses: number; 
             wordLength: string; 
             uniqueLetter: string;
@@ -236,7 +237,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
             setShowHighscoreForm(false);
         } 
 
-        const handleSubmitHighscore = (highscoreData: { name: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
+        const handleSubmitHighscore = (highscoreData: { name: string; gameId: string; guesses: number; wordLength: string; uniqueLetter: string; time: string}) => {
             onSubmitHighscore( {...highscoreData});
         }
 
@@ -276,6 +277,7 @@ export default function GameUI({ letterCount, allowRepeatingLetters, onReturn, o
         if (showHighscoreForm) {
             return (
                 <HighscoreSubmit
+                gameId={gameId}
                 guesses={guesses.length} 
                 wordLength={letterCount} 
                 uniqueLetter={allowRepeatingLetters} 
