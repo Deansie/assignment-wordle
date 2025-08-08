@@ -104,6 +104,10 @@ export default function About(): ReactNode {
                                     <li>
                                     <strong>Datasources:</strong> <a href='https://github.com/hermitdave/FrequencyWords/blob/master/content/2018/en/en_full.txt'>English wordlist</a> from FrequencyWords
                                     </li>
+                                    <li>
+                                    <strong>CSS Background:</strong> <a href='https://grabient.com/HQNgTAHANMAsEFYZjLKBaADMAzARmi2DAE4QZYTDtY8wNswQSY8B2cvXJh4BE+ui6ZMOXngRsoXHDnrCC04CRJsgA?style=angularSwatches&steps=34&angle=210'>Grabient</a> from CSS Gradients
+                                    </li>
+                                    
                                 </ul>
                          </div>
                     </div>

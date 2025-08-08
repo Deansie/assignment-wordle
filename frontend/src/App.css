@@ -1,24 +1,22 @@
 .app-wrapper {
-      
   max-width: 600px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin: auto;
   transition: box-shadow 0.3s ease, margin-top 0.3s ease;
+  box-shadow: 0 0 12px 4px #666565;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
 
   .app-wrapper {
-    box-shadow: 0 0 12px 4px #666565;
     margin-top: 5rem;
     margin-bottom: 5rem;
   }
 
 }
 
-@media (max-width: 599px) {
+@media (max-width: 799px) {
 
   .app-wrapper {
       box-sizing: none;
