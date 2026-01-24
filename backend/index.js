@@ -8,7 +8,13 @@ import escapeHtml from 'escape-html';
 
 const app = express();
 const port = process.env.PORT || 5081;
-const uri = 'mongodb://mongodb-service:27017';
+
+if (!process.env.MONGODB_URI) {
+  throw new Error('MONGODB_URI must be set');
+}
+
+const uri = process.env.MONGODB_URI;
+
 const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 5000, 
   heartbeatFrequencyMS: 10000,            
